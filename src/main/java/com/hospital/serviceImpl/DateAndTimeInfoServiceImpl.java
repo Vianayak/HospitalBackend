@@ -2,7 +2,9 @@ package com.hospital.serviceImpl;
 
 import org.springframework.stereotype.Service;
 
+import com.hospital.service.DateAndTimeInfoService;
+
 @Service
-public class DateAndTimeInfoServiceImpl {
+public class DateAndTimeInfoServiceImpl implements DateAndTimeInfoService{
 
 }
