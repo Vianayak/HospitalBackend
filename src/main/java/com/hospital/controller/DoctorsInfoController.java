@@ -1,8 +1,12 @@
 package com.hospital.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +17,7 @@ import com.hospital.service.DoctorsInfoService;
 
 @RestController
 @RequestMapping("/api/doctors")
+@CrossOrigin(origins = "*")
 public class DoctorsInfoController {
 	
 	@Autowired
@@ -32,5 +37,16 @@ public class DoctorsInfoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Failed to save the doctor: " + e.getMessage());
         }
+    }
+	
+	@GetMapping("/doctors-list")
+    public ResponseEntity<List<DoctorsInfo>> getAllDoctors() {
+        List<DoctorsInfo> doctors = doctorsInfoService.getDoctorsList();
+
+        if (doctors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(doctors);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(doctors);
     }
 }

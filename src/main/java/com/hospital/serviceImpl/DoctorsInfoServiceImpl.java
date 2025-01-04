@@ -1,5 +1,7 @@
 package com.hospital.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,12 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 	        // Save the doctor to the database
 	        return doctorInfoRepo.save(doctor);
 	    }
+
+	@Override
+	public List<DoctorsInfo> getDoctorsList() {
+		// TODO Auto-generated method stub
+		return doctorInfoRepo.findAll();
+	}
 
 
 

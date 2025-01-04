@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 @Entity
 public class DoctorsInfo {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private int regestrationNum;
 	private String specialization;
