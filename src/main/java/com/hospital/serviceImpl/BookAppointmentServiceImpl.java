@@ -21,9 +21,9 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	@Autowired
 	private BookAppointmentRepo repo;
 
-	private String razorpayId = "rzp_test_2ThA8oBdItjHWx";
+	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
 
-	private String razorpaySecret = "kp92ChOlLxScXv7w0H2B4khg";
+	private String razorpaySecret = "2Zp5B7nkfv4tS3bBDxaePh9f";
 	
 	private RazorpayClient razorpayCLient;
 
