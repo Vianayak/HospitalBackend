@@ -29,10 +29,12 @@ public class BookAppointmentController {
 		return new ResponseEntity<BookAppointment>(razorpayOrder, HttpStatus.CREATED);
 	}
 	
-	@PostMapping("/paymentCallback")
-    public ResponseEntity<?> paymentCallback(@RequestBody Map<String, String> response) {
-		bookApp.updateStatus(response);
-        return ResponseEntity.ok().body("Payment successful");
+	
+	@PostMapping("/verify-payment")
+    public ResponseEntity<String> verifyPayment(@RequestBody Map<String, String> paymentDetails) {
+        return bookApp.verifyPayment(paymentDetails);
     }
+	
+
 
 }
