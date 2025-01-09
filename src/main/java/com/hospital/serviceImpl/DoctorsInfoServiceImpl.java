@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
+import com.hospital.repo.DateAndTimeInfoRepo;
 import com.hospital.repo.DoctorInfoRepo;
 import com.hospital.service.DoctorsInfoService;
 
@@ -14,6 +16,9 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 
 	@Autowired
 	private DoctorInfoRepo doctorInfoRepo;
+	
+	@Autowired
+	private DateAndTimeInfoRepo dateAndTimeInfoRepo;
 
 	 public DoctorsInfo saveDoctor(DoctorsInfo doctor) {
 	        // Save the doctor to the database
@@ -25,6 +30,9 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 		// TODO Auto-generated method stub
 		return doctorInfoRepo.findAll();
 	}
+
+	
+
 
 
 

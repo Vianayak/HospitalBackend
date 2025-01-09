@@ -1,5 +1,9 @@
 package com.hospital.service;
 
-public interface DateAndTimeInfoService {
+import java.util.List;
 
+import com.hospital.model.DateAndTimeInfo;
+
+public interface DateAndTimeInfoService {
+	public List<DateAndTimeInfo> getDoctorSchedule(int regNum);
 }

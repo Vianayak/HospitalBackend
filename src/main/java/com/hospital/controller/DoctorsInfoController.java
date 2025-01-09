@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
+import com.hospital.service.DateAndTimeInfoService;
 import com.hospital.service.DoctorsInfoService;
 
 @RestController
@@ -22,6 +25,9 @@ public class DoctorsInfoController {
 	
 	@Autowired
 	private DoctorsInfoService doctorsInfoService;
+	
+	@Autowired 
+	private DateAndTimeInfoService dateInfoService;
 	
 	@PostMapping("/save")
     public ResponseEntity<String> saveDoctor(@RequestBody DoctorsInfo doctor) {
@@ -49,4 +55,16 @@ public class DoctorsInfoController {
 
         return ResponseEntity.status(HttpStatus.OK).body(doctors);
     }
+	
+	@GetMapping("/doctor-schedule")
+	public ResponseEntity<List<DateAndTimeInfo>> getDoctorSchedule(@RequestParam int regNum) {
+	    List<DateAndTimeInfo> doctorSchedule = dateInfoService.getDoctorSchedule(regNum);  // Adjusted to get list from service
+
+	    if (doctorSchedule.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // Return NO_CONTENT if list is empty
+	    }
+
+	    return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);  // Return OK with the list of doctor schedules
+	}
+
 }
