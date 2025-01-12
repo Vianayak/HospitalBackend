@@ -34,10 +34,11 @@ public class JWTFilter extends OncePerRequestFilter {
 		String authentication = request.getHeader("Authorization");
 		String token = "";
 		String username = "";
-		System.out.println("Url - " + request.getRequestURI());
+		String url =request.getRequestURI();
+		System.out.println("Url - " + url);
 
-		if (request.getRequestURI().equalsIgnoreCase("api/user/login")
-				|| request.getRequestURI().equalsIgnoreCase("api/user/register")) {
+		if (url.equalsIgnoreCase("/api/user/login")
+				|| request.getRequestURI().equalsIgnoreCase("/api/user/register")) {
 			filterChain.doFilter(request, response);// Continue without applying JWT Login
 			return;
 		}

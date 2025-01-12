@@ -38,11 +38,15 @@ public class UserController {
 	public String home() {
 		return "Success";
 	}
+	
 	@GetMapping("/all")
 	public List<Users> getAllUsers() {
 		List<Users> list = userService.getAllUsers();
 		return list;
 	}
+	
+	
+	
 	@PostMapping("/register")
 	public String registerUser(@RequestBody UserDto dto) {
 		Users user = userService.saveUser(dto);
