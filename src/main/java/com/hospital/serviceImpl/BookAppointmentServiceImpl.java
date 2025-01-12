@@ -1,6 +1,5 @@
 package com.hospital.serviceImpl;
 
-import java.util.Base64;
 import java.util.Map;
 
 import javax.crypto.Mac;
@@ -12,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.AppointmentDto;
 import com.hospital.model.BookAppointment;
+import com.hospital.model.DateAndTimeInfo;
 import com.hospital.repo.BookAppointmentRepo;
+import com.hospital.repo.DateAndTimeInfoRepo;
 import com.hospital.service.BookAppointmentService;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -25,6 +27,9 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 
 	@Autowired
 	private BookAppointmentRepo repo;
+	
+	@Autowired
+	private DateAndTimeInfoRepo scheduleRepo;
 
 	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
 
@@ -38,17 +43,44 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	}
 
 	@Override
-	public BookAppointment initiate(BookAppointment initiateAppointment) throws RazorpayException {
+	public void initiate(AppointmentDto dto) throws RazorpayException {
 		JSONObject options = new JSONObject();
-		options.put("amount", initiateAppointment.getAmount() * 100);
+		options.put("amount", dto.getAmount() * 100);
 		options.put("currency", "INR");
-		options.put("receipt", initiateAppointment.getEmail());
+		options.put("receipt", dto.getEmail());
 		com.razorpay.Order razorpayOrder = razorpayCLient.orders.create(options);
 		if (razorpayOrder != null) {
-			initiateAppointment.setRazorpayOrderId(razorpayOrder.get("id"));
-			initiateAppointment.setOrderStatus(razorpayOrder.get("status"));
+			dto.setRazorpayOrderId(razorpayOrder.get("id"));
+			dto.setOrderStatus(razorpayOrder.get("status"));
 		}
-		return repo.save(initiateAppointment);
+		saveAppointmentDetails(dto);
+		saveScheduleDetails(dto);
+	}
+
+	private void saveScheduleDetails(AppointmentDto dto) {
+		// TODO Auto-generated method stub
+		DateAndTimeInfo info=new DateAndTimeInfo();
+		info.setDate(dto.getScheduledDate());
+		info.setRegestrationNum(dto.getDoctorRegNum());
+		info.setSlot(dto.getSlot());
+		info.setTime(dto.getScheduledTime());
+		scheduleRepo.save(info);
+	}
+
+	private void saveAppointmentDetails(AppointmentDto dto) {
+		// TODO Auto-generated method stub
+		BookAppointment app=new BookAppointment();
+		app.setFirstName(dto.getFirstName());
+		app.setLastName(dto.getLastName());
+		app.setAmount(dto.getAmount());
+		app.setDob(dto.getDob());
+		app.setDoctorRegNum(dto.getDoctorRegNum());
+		app.setEmail(dto.getEmail());
+		app.setGender(dto.getGender());
+		app.setMobile(dto.getMobile());
+		app.setOrderStatus(dto.getOrderStatus());
+		app.setRazorpayOrderId(dto.getRazorpayOrderId());
+		repo.save(app);
 	}
 
 	@Override

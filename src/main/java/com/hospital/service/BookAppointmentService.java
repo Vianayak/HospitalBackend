@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 
-import com.hospital.model.BookAppointment;
+import com.hospital.dto.AppointmentDto;
 import com.razorpay.RazorpayException;
 
 public interface BookAppointmentService {
-	public BookAppointment initiate(BookAppointment initiateAppointment) throws RazorpayException;
+	public void initiate(AppointmentDto dto) throws RazorpayException;
 
 	ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails);
 }

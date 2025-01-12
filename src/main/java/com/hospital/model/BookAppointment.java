@@ -19,6 +19,13 @@ public class BookAppointment {
 	private String orderStatus;
 	private String razorpayOrderId;
 	private Integer amount;
+	private Integer doctorRegNum;
+	public Integer getDoctorRegNum() {
+		return doctorRegNum;
+	}
+	public void setDoctorRegNum(Integer doctorRegNum) {
+		this.doctorRegNum = doctorRegNum;
+	}
 	public String getOrderStatus() {
 		return orderStatus;
 	}
