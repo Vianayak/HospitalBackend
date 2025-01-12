@@ -1,21 +1,27 @@
 package com.hospital.serviceImpl;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hospital.repo.UserRepository;
+import com.hospital.dto.UserDto;
+import com.hospital.model.Users;
+import com.hospital.repo.UserRepo;
 import com.hospital.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository user;
+	private UserRepo userRepo;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -41,6 +47,27 @@ public class UserServiceImpl implements UserService {
 		Random random = new Random();
 		int otp = 100000 + random.nextInt(900000);
 		return String.valueOf(otp);
+	}
+
+	
+	//srihari
+	@Override
+	public Users saveUser(UserDto dto) {
+		Users users = new Users();
+		users.setId(dto.getId());
+		users.setEmail(dto.getEmail());
+		users.setFirstName(dto.getFirstName());
+		users.setLastName(dto.getLastName());
+		users.setMobileNumber(dto.getMobileNumber());
+		users.setPassword(encoder.encode(dto.getPassword()));//Encoding the passowrd
+		users.setRegistrationNumber(dto.getRegistrationNumber());
+		users.setRole(dto.getRole());
+		return userRepo.save(users);
+	}
+
+	@Override
+	public List<Users> getAllUsers() {
+		return userRepo.findAll();
 	}
 
 }
