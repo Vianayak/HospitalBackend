@@ -12,5 +12,5 @@ import jakarta.mail.MessagingException;
 public interface BookAppointmentService {
 	public void initiate(AppointmentDto dto) throws RazorpayException, MessagingException;
 
-	ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails);
+	ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails)  throws MessagingException;
 }

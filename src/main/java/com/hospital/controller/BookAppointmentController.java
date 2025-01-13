@@ -40,7 +40,7 @@ public class BookAppointmentController {
 	
 	
 	@PostMapping("/verify-payment")
-    public ResponseEntity<String> verifyPayment(@RequestBody Map<String, String> paymentDetails) {
+    public ResponseEntity<String> verifyPayment(@RequestBody Map<String, String> paymentDetails) throws MessagingException {
         return bookApp.verifyPayment(paymentDetails);
     }
 	

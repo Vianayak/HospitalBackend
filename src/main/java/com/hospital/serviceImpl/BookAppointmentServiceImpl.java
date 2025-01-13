@@ -64,40 +64,39 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 			dto.setRazorpayOrderId(razorpayOrder.get("id"));
 			dto.setOrderStatus(razorpayOrder.get("status"));
 		}
-		saveAppointmentDetails(dto);
-		saveScheduleDetails(dto);
-		DoctorsInfo doctor = doctorRepo.findByRegestrationNum(dto.getDoctorRegNum());
-		emailService.sendAppointmentConfirmation(dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getScheduledDate(), dto.getScheduledTime(), doctor.getName(), doctor.getSpecialization(), dto.getAmount());
+		BookAppointment app=saveAppointmentDetails(dto);
+		saveScheduleDetails(dto,app.getId());
+		
 	}
 
-	private void saveScheduleDetails(AppointmentDto dto) {
+	private void saveScheduleDetails(AppointmentDto dto,int id) {
 		// TODO Auto-generated method stub
 		DateAndTimeInfo info=new DateAndTimeInfo();
 		info.setDate(dto.getScheduledDate());
 		info.setRegestrationNum(dto.getDoctorRegNum());
 		info.setSlot(dto.getSlot());
 		info.setTime(dto.getScheduledTime());
+		info.setAppointmentId(id);
 		scheduleRepo.save(info);
 	}
 
-	private void saveAppointmentDetails(AppointmentDto dto) {
+	private BookAppointment saveAppointmentDetails(AppointmentDto dto) {
 		// TODO Auto-generated method stub
 		BookAppointment app=new BookAppointment();
 		app.setFirstName(dto.getFirstName());
 		app.setLastName(dto.getLastName());
 		app.setAmount(dto.getAmount());
 		app.setDob(dto.getDob());
-		app.setDoctorRegNum(dto.getDoctorRegNum());
 		app.setEmail(dto.getEmail());
 		app.setGender(dto.getGender());
 		app.setMobile(dto.getMobile());
 		app.setOrderStatus(dto.getOrderStatus());
 		app.setRazorpayOrderId(dto.getRazorpayOrderId());
-		repo.save(app);
+		return repo.save(app);
 	}
 
 	@Override
-	public ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails) {
+	public ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails) throws MessagingException {
 		String paymentId = paymentDetails.get("razorpay_payment_id");
 		String orderId = paymentDetails.get("razorpay_order_id");
 		String signature = paymentDetails.get("razorpay_signature");
@@ -108,7 +107,10 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 			BookAppointment appointment = repo.findByRazorpayOrderId(orderId);
 			if (appointment != null) {
 				appointment.setOrderStatus("captured");
-				repo.save(appointment);
+				BookAppointment app=repo.save(appointment);
+				DateAndTimeInfo info=scheduleRepo.findByAppointmentId(app.getId());
+				DoctorsInfo doctor = doctorRepo.findByRegestrationNum(info.getRegestrationNum());
+				emailService.sendAppointmentConfirmation(app.getEmail(), app.getFirstName(), app.getLastName(), info.getDate(), info.getTime(), doctor.getName(), doctor.getSpecialization(), app.getAmount());
 				return ResponseEntity.ok("Payment verified and status updated.");
 			}
 		}

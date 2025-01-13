@@ -10,4 +10,5 @@ import com.hospital.model.DateAndTimeInfo;
 @Repository
 public interface DateAndTimeInfoRepo extends JpaRepository<DateAndTimeInfo, Integer> {
 	List<DateAndTimeInfo> findByRegestrationNum(int regNum);
+	DateAndTimeInfo findByAppointmentId(int appId);
 }
