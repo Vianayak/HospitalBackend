@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OtpService {
 
-	@Autowired
-	private JavaMailSender mailSender;
+
 	private Map<String, OtpData> otpStore = new HashMap<>();
 
 	public String generateOTP(String email) {
@@ -61,11 +60,5 @@ public class OtpService {
 		}
 	}
 
-	public void sendOTPEmail(String email, String otp) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(email);
-		message.setSubject("Your OTP Code");
-		message.setText("Dear User,\n\nYour OTP is: " + otp + "\n\nThis OTP is valid for 5 minutes.");
-		mailSender.send(message);
-	}
+	
 }

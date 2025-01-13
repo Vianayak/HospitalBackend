@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hospital.service.EmailService;
 import com.hospital.serviceImpl.OtpService;
 
 import jakarta.mail.internet.AddressException;
@@ -20,6 +21,9 @@ public class OtpController {
 
 	@Autowired
 	private OtpService otpService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@PostMapping("/sendOtp")
     public ResponseEntity<String> sendOTP(@RequestParam String email) {
@@ -30,7 +34,7 @@ public class OtpController {
 
         // Generate OTP and send to email
         String otp = otpService.generateOTP(email);
-        otpService.sendOTPEmail(email, otp);
+        emailService.sendOTPEmail(email, otp);
 
         return ResponseEntity.ok("OTP sent successfully to " + email);
     }

@@ -1,6 +1,7 @@
 package com.hospital.serviceImpl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,13 +15,17 @@ import org.springframework.stereotype.Service;
 import com.hospital.dto.AppointmentDto;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
+import com.hospital.model.DoctorsInfo;
 import com.hospital.repo.BookAppointmentRepo;
 import com.hospital.repo.DateAndTimeInfoRepo;
+import com.hospital.repo.DoctorInfoRepo;
 import com.hospital.service.BookAppointmentService;
+import com.hospital.service.EmailService;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.mail.MessagingException;
 
 @Service
 public class BookAppointmentServiceImpl implements BookAppointmentService {
@@ -30,6 +35,12 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	
 	@Autowired
 	private DateAndTimeInfoRepo scheduleRepo;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private DoctorInfoRepo doctorRepo;
 
 	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
 
@@ -43,7 +54,7 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	}
 
 	@Override
-	public void initiate(AppointmentDto dto) throws RazorpayException {
+	public void initiate(AppointmentDto dto) throws RazorpayException, MessagingException {
 		JSONObject options = new JSONObject();
 		options.put("amount", dto.getAmount() * 100);
 		options.put("currency", "INR");
@@ -55,6 +66,8 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 		}
 		saveAppointmentDetails(dto);
 		saveScheduleDetails(dto);
+		DoctorsInfo doctor = doctorRepo.findByRegestrationNum(dto.getDoctorRegNum());
+		emailService.sendAppointmentConfirmation(dto.getEmail(), dto.getFirstName(), dto.getLastName(), dto.getScheduledDate(), dto.getScheduledTime(), doctor.getName(), doctor.getSpecialization(), dto.getAmount());
 	}
 
 	private void saveScheduleDetails(AppointmentDto dto) {

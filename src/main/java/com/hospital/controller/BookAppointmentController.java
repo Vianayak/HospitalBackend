@@ -16,6 +16,8 @@ import com.hospital.dto.AppointmentDto;
 import com.hospital.service.BookAppointmentService;
 import com.razorpay.RazorpayException;
 
+import jakarta.mail.MessagingException;
+
 @RestController
 @RequestMapping("/api/book-appointment")
 @CrossOrigin(origins = "*")
@@ -24,7 +26,7 @@ public class BookAppointmentController {
 	private BookAppointmentService bookApp;
 
 	@PostMapping(value = "/initiate")
-	public ResponseEntity<Map<String, Object>> createOrder(@RequestBody AppointmentDto dto) throws RazorpayException {
+	public ResponseEntity<Map<String, Object>> createOrder(@RequestBody AppointmentDto dto) throws RazorpayException, MessagingException {
 		bookApp.initiate(dto);
 		Map<String, Object> response = new HashMap<>();
 	    response.put("razorpayOrderId", dto.getRazorpayOrderId());
