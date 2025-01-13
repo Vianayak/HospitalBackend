@@ -28,7 +28,8 @@ public class EmailServiceImpl implements EmailService {
 
 	public String getEmailTemplate(String firstName, String lastName, String date, String time, String doctorName,
 			String specialty, int amount) {
-		return "Hello " + firstName + " " + lastName + ",<br/><br/>"
+		return 
+				"Hello " + firstName + " " + lastName + ",<br/><br/>"
 				+ "Thank you for booking an appointment with us! Here are the details of your upcoming visit:<br/><br/>"
 				+ "<b>Appointment Details</b><br/>" + "Date: " + date + "<br/>" + "Time: " + time + "<br/>" + "Doctor: "
 				+ doctorName + "<br/>" + "Specialty: " + specialty + "<br/>" + "Clinic Name: Jaya Hospitals<br/>"
