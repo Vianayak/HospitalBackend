@@ -10,7 +10,7 @@ public class DateAndTimeInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private int regestrationNum;
+	private String regestrationNum;
 	private String date;
 	private String slot;
 	private String time;
@@ -32,11 +32,13 @@ public class DateAndTimeInfo {
 		this.id = id;
 	}
 
-	public int getRegestrationNum() {
+	
+
+	public String getRegestrationNum() {
 		return regestrationNum;
 	}
 
-	public void setRegestrationNum(int regestrationNum) {
+	public void setRegestrationNum(String regestrationNum) {
 		this.regestrationNum = regestrationNum;
 	}
 

@@ -15,7 +15,7 @@ public class DateAndTimeInfoServiceImpl implements DateAndTimeInfoService{
 	@Autowired
 	private DateAndTimeInfoRepo dateAndTimeInfoRepo;
 	@Override
-	public List<DateAndTimeInfo> getDoctorSchedule(int regNum) {
+	public List<DateAndTimeInfo> getDoctorSchedule(String regNum) {
 	    // Assuming findByRegestrationNum returns a list of doctor schedules (change the method accordingly in the repository)
 	    return dateAndTimeInfoRepo.findByRegestrationNum(regNum);  // Ensure this returns a List<DateAndTimeInfo>
 	}

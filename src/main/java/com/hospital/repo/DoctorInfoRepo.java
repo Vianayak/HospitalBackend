@@ -7,5 +7,5 @@ import com.hospital.model.DoctorsInfo;
 
 @Repository
 public interface DoctorInfoRepo extends JpaRepository<DoctorsInfo, Integer> {
-	public DoctorsInfo findByRegestrationNum(int num);
+	public DoctorsInfo findByRegestrationNum(String num);
 }

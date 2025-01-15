@@ -5,5 +5,5 @@ import java.util.List;
 import com.hospital.model.DateAndTimeInfo;
 
 public interface DateAndTimeInfoService {
-	public List<DateAndTimeInfo> getDoctorSchedule(int regNum);
+	public List<DateAndTimeInfo> getDoctorSchedule(String regNum);
 }

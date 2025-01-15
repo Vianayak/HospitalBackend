@@ -14,7 +14,7 @@ public class DoctorsInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	private int regestrationNum;
+	private String regestrationNum;
 	private String specialization;
 	private String name;
 	private String availability;
@@ -56,11 +56,13 @@ public class DoctorsInfo {
 		this.id = id;
 	}
 
-	public int getRegestrationNum() {
+	
+
+	public String getRegestrationNum() {
 		return regestrationNum;
 	}
 
-	public void setRegestrationNum(int regestrationNum) {
+	public void setRegestrationNum(String regestrationNum) {
 		this.regestrationNum = regestrationNum;
 	}
 

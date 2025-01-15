@@ -11,7 +11,7 @@ public class AppointmentDto {
 	private String orderStatus;
 	private String razorpayOrderId;
 	private Integer amount;
-	private int doctorRegNum;
+	private String doctorRegNum;
 	private String scheduledDate;
 	private String scheduledTime;
 	private String slot;
@@ -88,11 +88,13 @@ public class AppointmentDto {
 		this.amount = amount;
 	}
 
-	public int getDoctorRegNum() {
+	
+
+	public String getDoctorRegNum() {
 		return doctorRegNum;
 	}
 
-	public void setDoctorRegNum(Integer doctorRegNum) {
+	public void setDoctorRegNum(String doctorRegNum) {
 		this.doctorRegNum = doctorRegNum;
 	}
 

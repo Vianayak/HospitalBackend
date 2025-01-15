@@ -57,7 +57,7 @@ public class DoctorsInfoController {
     }
 	
 	@GetMapping("/doctor-schedule")
-	public ResponseEntity<List<DateAndTimeInfo>> getDoctorSchedule(@RequestParam int regNum) {
+	public ResponseEntity<List<DateAndTimeInfo>> getDoctorSchedule(@RequestParam String regNum) {
 	    List<DateAndTimeInfo> doctorSchedule = dateInfoService.getDoctorSchedule(regNum);  // Adjusted to get list from service
 
 	    if (doctorSchedule.isEmpty()) {
