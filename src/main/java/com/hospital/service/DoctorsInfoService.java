@@ -11,5 +11,7 @@ public interface DoctorsInfoService {
 	
 	public List<DoctorsInfo> getDoctorsList();
 	
+	public DoctorsInfo getDoctorById(int doctorId);
+	
 
 }

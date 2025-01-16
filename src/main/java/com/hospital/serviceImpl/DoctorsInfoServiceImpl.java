@@ -30,6 +30,11 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 		// TODO Auto-generated method stub
 		return doctorInfoRepo.findAll();
 	}
+	
+	@Override
+	public DoctorsInfo getDoctorById(int doctorId) {
+        return doctorInfoRepo.findById(doctorId).orElseThrow(() -> new RuntimeException("Doctor not found"));
+    }
 
 	
 
