@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
 import com.hospital.service.DateAndTimeInfoService;
@@ -31,10 +32,15 @@ public class DoctorsInfoController {
 	private DateAndTimeInfoService dateInfoService;
 	
 	@PostMapping("/save")
-    public ResponseEntity<String> saveDoctor(@RequestBody DoctorsInfo doctor) {
+    public ResponseEntity<String> saveDoctor(@RequestParam("doctor") String doctorJson,
+            @RequestParam("file") MultipartFile file) {
         try {
+        	
+        	ObjectMapper objectMapper = new ObjectMapper();
+            DoctorsInfo doctor = objectMapper.readValue(doctorJson, DoctorsInfo.class);
+            
             // Save the doctor using the service layer
-            DoctorsInfo savedDoctor = doctorsInfoService.saveDoctor(doctor);
+            DoctorsInfo savedDoctor = doctorsInfoService.saveDoctor(doctor,file);
 
             // Return a success response
             return ResponseEntity.status(HttpStatus.CREATED)
