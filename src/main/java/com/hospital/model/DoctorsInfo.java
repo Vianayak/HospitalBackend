@@ -70,9 +70,6 @@ public class DoctorsInfo {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	@Column(name = "languages")
-	private String languages;
 	private String location;
 
 	public int getId() {
@@ -101,20 +98,7 @@ public class DoctorsInfo {
 		this.specialization = specialization;
 	}
 
-	public List<String> getLanguages() {
-		if (languages == null || languages.isEmpty()) {
-			return List.of(); // Return an empty list if null or empty
-		}
-		return Arrays.asList(languages.split(",")); // Split the string into a list
-	}
-
-	public void setLanguages(List<String> languages) {
-		if (languages == null || languages.isEmpty()) {
-			this.languages = null; // Set to null if the list is empty
-		} else {
-			this.languages = String.join(",", languages); // Join the list into a single string
-		}
-	}
+	
 
 	public String getLocation() {
 		return location;
