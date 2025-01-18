@@ -17,7 +17,6 @@ public class DoctorsInfo {
 	private String regestrationNum;
 	private String specialization;
 	private String name;
-	private String availability;
 	private int experience;
 	 private String imagePath;
 	 private String email;
@@ -55,13 +54,6 @@ public class DoctorsInfo {
 		this.experience = experience;
 	}
 
-	public String getAvailability() {
-		return availability;
-	}
-
-	public void setAvailability(String availability) {
-		this.availability = availability;
-	}
 
 	public String getName() {
 		return name;
