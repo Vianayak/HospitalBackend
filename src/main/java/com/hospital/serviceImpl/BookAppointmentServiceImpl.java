@@ -1,7 +1,11 @@
 package com.hospital.serviceImpl;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,9 +20,11 @@ import com.hospital.dto.AppointmentDto;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
+import com.hospital.model.MeetingDetails;
 import com.hospital.repo.BookAppointmentRepo;
 import com.hospital.repo.DateAndTimeInfoRepo;
 import com.hospital.repo.DoctorInfoRepo;
+import com.hospital.repo.MeetingDetailsRepo;
 import com.hospital.service.BookAppointmentService;
 import com.hospital.service.EmailService;
 import com.razorpay.RazorpayClient;
@@ -26,6 +32,7 @@ import com.razorpay.RazorpayException;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class BookAppointmentServiceImpl implements BookAppointmentService {
@@ -41,6 +48,9 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	
 	@Autowired
 	private DoctorInfoRepo doctorRepo;
+	
+	@Autowired
+	private MeetingDetailsRepo meetRepo;
 
 	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
 
@@ -96,6 +106,7 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails) throws MessagingException {
 		String paymentId = paymentDetails.get("razorpay_payment_id");
 		String orderId = paymentDetails.get("razorpay_order_id");
@@ -110,11 +121,70 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 				BookAppointment app=repo.save(appointment);
 				DateAndTimeInfo info=scheduleRepo.findByAppointmentId(app.getId());
 				DoctorsInfo doctor = doctorRepo.findByRegestrationNum(info.getRegestrationNum());
+				MeetingDetails meet=saveMeetingDetails(app,doctor);
+				sendMeetingDetails(meet,app,doctor,info);
 				emailService.sendAppointmentConfirmation(app.getEmail(), app.getFirstName(), app.getLastName(), info.getDate(), info.getTime(), doctor.getName(), doctor.getSpecialization(), app.getAmount());
 				return ResponseEntity.ok("Payment verified and status updated.");
 			}
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid payment verification.");
+	}
+
+	private void sendMeetingDetails(MeetingDetails meet, BookAppointment app, DoctorsInfo doctor, DateAndTimeInfo info) throws MessagingException {
+		// TODO Auto-generated method stub
+		String meetingURL = "https://meet.jit.si/" + meet.getMeetingRoom();
+		String doctorURL = meetingURL + "?config.startWithAudioMuted=true"; // Doctor can host
+	    String patientURL = meetingURL + "?config.startWithAudioMuted=true&config.prejoinPageEnabled=false"; // Patient can only join
+	    emailService.sendMeetingToDoctor(meet, app, doctor, info, doctorURL);
+	    emailService.sendMeetingToPatient(meet, app, doctor, info, patientURL);
+	}
+
+	private MeetingDetails saveMeetingDetails(BookAppointment app, DoctorsInfo doctor) {
+		// TODO Auto-generated method stub
+		MeetingDetails meet=new MeetingDetails();
+		meet.setAppointmentId(app.getId());
+		meet.setMeetingRoom(generateMeetingRoom(app,doctor));
+		meet.setPassword(hashPassword(generatePassword(app.getFirstName(),doctor.getRegestrationNum())));
+		return meetRepo.save(meet);
+	}
+	
+	public String generatePassword(String patientFirstName, String doctorRegNum) {
+        if (patientFirstName == null || patientFirstName.length() < 4 || doctorRegNum == null || doctorRegNum.length() < 4) {
+            throw new IllegalArgumentException("Invalid patient first name or doctor registration number.");
+        }
+
+        // Get the first four letters of the patient's first name
+        String patientNamePart = patientFirstName.substring(0, 4);
+        // Capitalize the first letter
+        patientNamePart = patientNamePart.substring(0, 1).toUpperCase() + patientNamePart.substring(1);
+
+        // Get the last four digits of the doctor's registration number
+        String doctorRegNumPart = doctorRegNum.substring(doctorRegNum.length() - 4);
+
+        // Combine to form the password
+        String password = patientNamePart + "@" + doctorRegNumPart;
+        return password;
+    }
+	
+	public String hashPassword(String password) {
+        try {
+            // Create a MessageDigest instance for SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            // Hash the password bytes
+            byte[] hashedBytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            // Encode the hashed bytes to a Base64 string
+            return Base64.getEncoder().encodeToString(hashedBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error while hashing password", e);
+        }
+    }
+
+	private String generateMeetingRoom(BookAppointment app, DoctorsInfo doctor) {
+		// TODO Auto-generated method stub
+		Random random = new Random();
+		int randomNumber = 10000 + random.nextInt(90000);
+		String meetingRoom = "MEET_" + randomNumber;
+		return meetingRoom;
 	}
 
 	public static boolean validateRazorpaySignature(String paymentId, String orderId, String signature) {

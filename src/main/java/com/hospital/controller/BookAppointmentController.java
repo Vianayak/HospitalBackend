@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital.dto.AppointmentDto;
@@ -24,6 +25,8 @@ import jakarta.mail.MessagingException;
 public class BookAppointmentController {
 	@Autowired
 	private BookAppointmentService bookApp;
+	
+
 
 	@PostMapping(value = "/initiate")
 	public ResponseEntity<Map<String, Object>> createOrder(@RequestBody AppointmentDto dto) throws RazorpayException, MessagingException {
@@ -44,6 +47,6 @@ public class BookAppointmentController {
         return bookApp.verifyPayment(paymentDetails);
     }
 	
-
+	
 
 }
