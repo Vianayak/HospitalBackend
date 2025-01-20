@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,12 +46,30 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
     }
 
 	private String saveImage(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return null;
-        }
-        Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
-        return rootLocation.resolve(file.getOriginalFilename()).toString();
-    }
+	    if (file == null || file.isEmpty()) {
+	        return null;
+	    }
+	    
+	    // Generate a unique file name using UUID
+	    String originalFileName = file.getOriginalFilename();
+	    String fileExtension = getFileExtension(originalFileName);
+	    String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+
+	    // Resolve the target path with the unique file name
+	    Path targetPath = rootLocation.resolve(uniqueFileName);
+
+	    // Copy the file to the target location
+	    Files.copy(file.getInputStream(), targetPath);
+
+	    return targetPath.toString();
+	}
+
+	private String getFileExtension(String fileName) {
+	    // Get the file extension from the original file name
+	    int dotIndex = fileName.lastIndexOf(".");
+	    return (dotIndex == -1) ? "" : fileName.substring(dotIndex);
+	}
+
 
 
 
