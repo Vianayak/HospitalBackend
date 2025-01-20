@@ -61,4 +61,21 @@ public class OtpService {
 	}
 
 	
+	
+	
+	public String generateForgotOTP(String email) {
+		// Generate a 6-digit OTP
+		
+		
+		String otp = String.format("%06d", new Random().nextInt(1000000));
+
+		// Set expiration time to 5 minutes from now
+		long expirationTime = System.currentTimeMillis() + 5 * 60 * 1000; // 5 minutes in milliseconds
+
+		// Store the OTP and expiration time
+		otpStore.put(email, new OtpData(otp, expirationTime));
+
+		return otp;
+	}
+	
 }
