@@ -1,6 +1,7 @@
 package com.hospital.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,4 +81,17 @@ public class DoctorsInfoController {
         return doctorsInfoService.getDoctorById(doctorId);
     }
 
+	
+	@PostMapping("/doctor-details")
+	public ResponseEntity<?> processDoctorDetails(@RequestBody Map<String, String> doctorDetails) {
+	    String email = doctorDetails.get("email");
+	    String username = doctorDetails.get("username");
+	    
+	    DoctorsInfo info=doctorsInfoService.getDoctorByEmail(email);
+
+	    // Process doctor details here
+	    System.out.println("Received doctor details: " + info);
+
+	    return ResponseEntity.ok(info);
+	}
 }

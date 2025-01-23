@@ -70,6 +70,12 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 	    return (dotIndex == -1) ? "" : fileName.substring(dotIndex);
 	}
 
+	@Override
+	public DoctorsInfo getDoctorByEmail(String email) {
+		// TODO Auto-generated method stub
+		return doctorInfoRepo.findByEmail(email);
+	}
+
 
 
 

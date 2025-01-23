@@ -1,8 +1,11 @@
 package com.hospital.model;
 
+import java.util.List;
+
 import com.hospital.enums.DoctorStatus;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,8 +30,16 @@ public class BookAppointment {
 	@Enumerated(EnumType.STRING) // Use EnumType.ORDINAL if you prefer numbers
     @Column(name = "doctor_status", nullable = false)
     private DoctorStatus doctorStatus;
-	private Long issueId;
 	
+	 @ElementCollection
+	    private List<Long> issueIds;
+	
+	public List<Long> getIssueIds() {
+		return issueIds;
+	}
+	public void setIssueIds(List<Long> issueIds) {
+		this.issueIds = issueIds;
+	}
 	public String getOrderStatus() {
 		return orderStatus;
 	}
@@ -95,10 +106,5 @@ public class BookAppointment {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public Long getIssueId() {
-		return issueId;
-	}
-	public void setIssueId(Long issueId) {
-		this.issueId = issueId;
-	}
+	
 }

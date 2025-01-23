@@ -106,6 +106,7 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 		app.setOrderStatus(dto.getOrderStatus());
 		app.setRazorpayOrderId(dto.getRazorpayOrderId());
 		app.setDoctorStatus(DoctorStatus.NOTGIVEN);
+		app.setIssueIds(dto.getIssueIds());
 		return repo.save(app);
 	}
 

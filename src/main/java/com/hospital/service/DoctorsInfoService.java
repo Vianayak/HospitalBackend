@@ -16,5 +16,7 @@ public interface DoctorsInfoService {
 	
 	public DoctorsInfo getDoctorById(int doctorId);
 	
+	
+	public DoctorsInfo getDoctorByEmail(String email);	
 
 }

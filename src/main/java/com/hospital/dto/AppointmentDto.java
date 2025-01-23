@@ -1,5 +1,7 @@
 package com.hospital.dto;
 
+import java.util.List;
+
 public class AppointmentDto {
 
 	private String firstName;
@@ -15,7 +17,7 @@ public class AppointmentDto {
 	private String scheduledDate;
 	private String scheduledTime;
 	private String slot;
-	private Long issueId;
+	private List<Long> issueIds;
 
 	public String getFirstName() {
 		return firstName;
@@ -123,12 +125,14 @@ public class AppointmentDto {
 		this.slot = slot;
 	}
 
-	public Long getIssueId() {
-		return issueId;
+	public List<Long> getIssueIds() {
+		return issueIds;
 	}
 
-	public void setIssueId(Long issueId) {
-		this.issueId = issueId;
+	public void setIssueIds(List<Long> issueIds) {
+		this.issueIds = issueIds;
 	}
+
+	
 
 }
