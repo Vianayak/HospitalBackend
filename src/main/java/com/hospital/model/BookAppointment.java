@@ -27,6 +27,8 @@ public class BookAppointment {
 	@Enumerated(EnumType.STRING) // Use EnumType.ORDINAL if you prefer numbers
     @Column(name = "doctor_status", nullable = false)
     private DoctorStatus doctorStatus;
+	private Long issueId;
+	
 	public String getOrderStatus() {
 		return orderStatus;
 	}
@@ -92,5 +94,11 @@ public class BookAppointment {
 	}
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+	public Long getIssueId() {
+		return issueId;
+	}
+	public void setIssueId(Long issueId) {
+		this.issueId = issueId;
 	}
 }

@@ -15,6 +15,7 @@ public class AppointmentDto {
 	private String scheduledDate;
 	private String scheduledTime;
 	private String slot;
+	private Long issueId;
 
 	public String getFirstName() {
 		return firstName;
@@ -120,6 +121,14 @@ public class AppointmentDto {
 
 	public void setSlot(String slot) {
 		this.slot = slot;
+	}
+
+	public Long getIssueId() {
+		return issueId;
+	}
+
+	public void setIssueId(Long issueId) {
+		this.issueId = issueId;
 	}
 
 }
