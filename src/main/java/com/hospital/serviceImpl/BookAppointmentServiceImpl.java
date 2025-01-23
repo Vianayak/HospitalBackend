@@ -3,6 +3,7 @@ package com.hospital.serviceImpl;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Random;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hospital.dto.AppointmentDto;
+import com.hospital.dto.AppointmentStatsDTO;
+import com.hospital.enums.DoctorStatus;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
@@ -102,6 +105,7 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 		app.setMobile(dto.getMobile());
 		app.setOrderStatus(dto.getOrderStatus());
 		app.setRazorpayOrderId(dto.getRazorpayOrderId());
+		app.setDoctorStatus(DoctorStatus.NOTGIVEN);
 		return repo.save(app);
 	}
 
@@ -223,5 +227,23 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
             hexString.append(String.format("%02x", b));
         }
         return hexString.toString();
+    }
+    
+    @Override
+    public void updateAppointmentStatus(int appointmentId, DoctorStatus newStatus) {
+        // Fetch the appointment by its ID
+    	BookAppointment appointment = repo.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        // Update the status
+        appointment.setDoctorStatus(newStatus);
+
+        // Save the updated appointment
+        repo.save(appointment);
+    }
+    
+    @Override
+    public AppointmentStatsDTO getStatsForDate(String date,String doctorRegNum) {
+        return repo.getAppointmentStatsTillDate(date,doctorRegNum);
     }
 }
