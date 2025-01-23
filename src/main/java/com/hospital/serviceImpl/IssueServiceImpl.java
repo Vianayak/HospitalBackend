@@ -20,5 +20,9 @@ public class IssueServiceImpl implements IssueService {
 	public List<Issue> getIssuesByKeyword(String keyword) {
         return issueRepository.findByIssueNameContainingIgnoreCase(keyword);
     }
+	@Override
+	public List<Issue> getIssuesByIds(List<Long> issueIds) {
+        return issueRepository.findAllById(issueIds);
+    }
 
 }

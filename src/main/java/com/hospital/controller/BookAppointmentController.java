@@ -3,6 +3,7 @@ package com.hospital.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hospital.dto.AppointmentDto;
 import com.hospital.dto.AppointmentStatsDTO;
 import com.hospital.enums.DoctorStatus;
+import com.hospital.model.BookAppointment;
+import com.hospital.model.Issue;
 import com.hospital.service.BookAppointmentService;
+import com.hospital.service.IssueService;
 import com.razorpay.RazorpayException;
 
 import jakarta.mail.MessagingException;
@@ -31,6 +35,9 @@ import jakarta.mail.MessagingException;
 public class BookAppointmentController {
 	@Autowired
 	private BookAppointmentService bookApp;
+	
+	     @Autowired
+	    private IssueService issueService;
 	
 
 
@@ -70,5 +77,13 @@ public class BookAppointmentController {
         AppointmentStatsDTO stats = bookApp.getStatsForDate(date,regNum);
         return ResponseEntity.ok(stats);
     }
+	
+	
+	@GetMapping("/appointments-with-issues")
+    public List<Map<String, Object>> getAppointmentsWithIssues(
+            @RequestParam String date,
+            @RequestParam String doctorRegNum) {
 
+        return bookApp.getAppointmentsWithIssues(date, doctorRegNum);
+    }
 }

@@ -10,4 +10,5 @@ import com.hospital.model.Issue;
 @Repository
 public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Issue> findByIssueNameContainingIgnoreCase(String keyword);
+    List<Issue> findByIdIn(List<Long> ids);
 }

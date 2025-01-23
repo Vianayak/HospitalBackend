@@ -1,6 +1,7 @@
 package com.hospital.repo;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hospital.dto.AppointmentStatsDTO;
+import com.hospital.enums.DoctorStatus;
 import com.hospital.model.BookAppointment;
 @Repository
 public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Integer>{
@@ -27,6 +29,8 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
 	           "WHERE d.date <= :date AND d.regestrationNum = :doctorRegNum")
 	AppointmentStatsDTO getAppointmentStatsTillDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
 
+	
+	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);
 
 
 

@@ -3,10 +3,13 @@ package com.hospital.serviceImpl;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,10 +26,12 @@ import com.hospital.enums.DoctorStatus;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
+import com.hospital.model.Issue;
 import com.hospital.model.MeetingDetails;
 import com.hospital.repo.BookAppointmentRepo;
 import com.hospital.repo.DateAndTimeInfoRepo;
 import com.hospital.repo.DoctorInfoRepo;
+import com.hospital.repo.IssueRepository;
 import com.hospital.repo.MeetingDetailsRepo;
 import com.hospital.service.BookAppointmentService;
 import com.hospital.service.EmailService;
@@ -39,6 +44,9 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class BookAppointmentServiceImpl implements BookAppointmentService {
+
+    @Autowired
+    private IssueRepository issueRepository;
 
 	@Autowired
 	private BookAppointmentRepo repo;
@@ -54,6 +62,9 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	
 	@Autowired
 	private MeetingDetailsRepo meetRepo;
+	
+	@Autowired
+	private DateAndTimeInfoRepo dateAndTimeInfoRepo;
 
 	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
 
@@ -247,4 +258,60 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
     public AppointmentStatsDTO getStatsForDate(String date,String doctorRegNum) {
         return repo.getAppointmentStatsTillDate(date,doctorRegNum);
     }
+    
+    @Override
+    public List<Map<String, Object>> getAppointmentsWithIssues(String date, String doctorRegNum) {
+
+        // Step 1: Fetch DateAndTimeInfo records for the given date and doctorRegNum
+        List<DateAndTimeInfo> dateAndTimeInfos = dateAndTimeInfoRepo.findByDateAndRegestrationNum(date, doctorRegNum);
+
+        // Step 2: Extract appointmentIds from DateAndTimeInfo
+        List<Integer> appointmentIds = dateAndTimeInfos.stream()
+                .map(DateAndTimeInfo::getAppointmentId)
+                .collect(Collectors.toList());
+
+        // Step 3: Fetch BookAppointment records with status 'NOTGIVEN'
+        List<BookAppointment> appointments = repo.findByIdInAndDoctorStatus(appointmentIds, DoctorStatus.NOTGIVEN);
+
+        // Step 4: Collect all issue IDs from the appointments
+        List<Long> issueIds = appointments.stream()
+                .flatMap(appointment -> appointment.getIssueIds().stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Step 5: Fetch issue details
+        List<Issue> issues = issueRepository.findByIdIn(issueIds);
+
+        // Step 6: Create a map of issueId -> issueName
+        Map<Long, String> issueIdToNameMap = issues.stream()
+        	    .collect(Collectors.toMap(
+        	        Issue::getId,
+        	        Issue::getIssueName,
+        	        (existing, replacement) -> existing // Keep the existing value if duplicates are found
+        	    ));
+
+
+        // Step 7: Map the appointments with their corresponding issue names
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (BookAppointment appointment : appointments) {
+            Map<String, Object> appointmentDetails = new HashMap<>();
+            appointmentDetails.put("appointmentId", appointment.getId());
+            appointmentDetails.put("firstName", appointment.getFirstName());
+            appointmentDetails.put("lastName", appointment.getLastName());
+            appointmentDetails.put("mobile", appointment.getMobile());
+            appointmentDetails.put("email", appointment.getEmail());
+            appointmentDetails.put("doctorStatus", appointment.getDoctorStatus());
+
+            // Map issueIds to their names
+            List<String> issueNames = appointment.getIssueIds().stream()
+                    .map(issueIdToNameMap::get)
+                    .collect(Collectors.toList());
+            appointmentDetails.put("issues", issueNames);
+
+            result.add(appointmentDetails);
+        }
+
+        return result;
+    }
+
 }
