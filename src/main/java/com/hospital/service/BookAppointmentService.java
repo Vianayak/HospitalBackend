@@ -26,4 +26,8 @@ public interface BookAppointmentService {
 	List<Map<String, Object>> getAppointmentsWithIssues(String date, String doctorRegNum);
 
 	List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(String date, String doctorRegNum);
+
+	Double getTodayEarnings(String doctorRegNum, String date);
+
+	Double getTotalEarnings(String doctorRegNum);
 }

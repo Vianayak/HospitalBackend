@@ -31,6 +31,18 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
 
 	
 	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);
+	
+	
+	@Query("SELECT SUM(a.amount) FROM BookAppointment a " +
+            "JOIN DateAndTimeInfo d ON a.id = d.appointmentId " +
+            "WHERE a.orderStatus = 'captured' AND d.regestrationNum = :doctorRegNum " +
+            "AND d.date = :date")
+    Double calculateEarningsForDoctorOnDate(@Param("doctorRegNum") String doctorRegNum, @Param("date") String date);
+
+    @Query("SELECT SUM(a.amount) FROM BookAppointment a " +
+            "JOIN DateAndTimeInfo d ON a.id = d.appointmentId " +
+            "WHERE a.orderStatus = 'captured' AND d.regestrationNum = :doctorRegNum")
+    Double calculateTotalEarningsForDoctor(@Param("doctorRegNum") String doctorRegNum);
 
 
 

@@ -95,4 +95,19 @@ public class BookAppointmentController {
 
         return bookApp.getAppointmentsWithIssuesForAccepted(date, doctorRegNum);
     }
+	
+	@GetMapping("/earnings")
+    public ResponseEntity<Map<String, Double>> getEarnings(
+            @RequestParam String doctorRegNum,
+            @RequestParam String date) {
+        
+        Map<String, Double> earnings = new HashMap<>();
+        Double todayEarnings = bookApp.getTodayEarnings(doctorRegNum, date);
+        Double totalEarnings = bookApp.getTotalEarnings(doctorRegNum);
+
+        earnings.put("todayEarnings", todayEarnings != null ? todayEarnings : 0.0);
+        earnings.put("totalEarnings", totalEarnings != null ? totalEarnings : 0.0);
+
+        return ResponseEntity.ok(earnings);
+    }
 }

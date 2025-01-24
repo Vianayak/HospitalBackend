@@ -378,6 +378,16 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 
         return result;
     }
+    
+    @Override
+    public Double getTodayEarnings(String doctorRegNum, String date) {
+        return repo.calculateEarningsForDoctorOnDate(doctorRegNum, date);
+    }
+
+    @Override
+    public Double getTotalEarnings(String doctorRegNum) {
+        return repo.calculateTotalEarningsForDoctor(doctorRegNum);
+    }
 
 
 }
