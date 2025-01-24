@@ -86,4 +86,13 @@ public class BookAppointmentController {
 
         return bookApp.getAppointmentsWithIssues(date, doctorRegNum);
     }
+	
+	
+	@GetMapping("/appointments-with-issues-accepted")
+    public List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(
+            @RequestParam String date,
+            @RequestParam String doctorRegNum) {
+
+        return bookApp.getAppointmentsWithIssuesForAccepted(date, doctorRegNum);
+    }
 }

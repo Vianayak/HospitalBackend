@@ -24,4 +24,6 @@ public interface BookAppointmentService {
 	AppointmentStatsDTO getStatsForDate(String date, String doctorRegNum);
 
 	List<Map<String, Object>> getAppointmentsWithIssues(String date, String doctorRegNum);
+
+	List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(String date, String doctorRegNum);
 }

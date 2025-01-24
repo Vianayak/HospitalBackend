@@ -313,5 +313,71 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 
         return result;
     }
+    
+    @Override
+    public List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(String date, String doctorRegNum) {
+
+        // Step 1: Fetch DateAndTimeInfo records for the given date and doctorRegNum
+        List<DateAndTimeInfo> dateAndTimeInfos = dateAndTimeInfoRepo.findByDateAndRegestrationNum(date, doctorRegNum);
+
+        // Step 2: Extract appointmentIds from DateAndTimeInfo
+        List<Integer> appointmentIds = dateAndTimeInfos.stream()
+                .map(DateAndTimeInfo::getAppointmentId)
+                .collect(Collectors.toList());
+
+        // Step 3: Fetch BookAppointment records with status 'ACCEPTED'
+        List<BookAppointment> appointments = repo.findByIdInAndDoctorStatus(appointmentIds, DoctorStatus.ACCEPTED);
+
+        // Step 4: Collect all issue IDs from the appointments
+        List<Long> issueIds = appointments.stream()
+                .flatMap(appointment -> appointment.getIssueIds().stream())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Step 5: Fetch issue details
+        List<Issue> issues = issueRepository.findByIdIn(issueIds);
+
+        // Step 6: Create a map of issueId -> issueName
+        Map<Long, String> issueIdToNameMap = issues.stream()
+                .collect(Collectors.toMap(
+                        Issue::getId,
+                        Issue::getIssueName,
+                        (existing, replacement) -> existing // Keep the existing value if duplicates are found
+                ));
+
+        // Step 7: Create a map of appointmentId -> time from DateAndTimeInfo
+        Map<Integer, String> appointmentIdToTimeMap = dateAndTimeInfos.stream()
+                .collect(Collectors.toMap(
+                        DateAndTimeInfo::getAppointmentId,
+                        DateAndTimeInfo::getTime
+                ));
+
+        // Step 8: Map the appointments with their corresponding issue names and time
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (BookAppointment appointment : appointments) {
+            Map<String, Object> appointmentDetails = new HashMap<>();
+            appointmentDetails.put("appointmentId", appointment.getId());
+            appointmentDetails.put("firstName", appointment.getFirstName());
+            appointmentDetails.put("lastName", appointment.getLastName());
+            appointmentDetails.put("mobile", appointment.getMobile());
+            appointmentDetails.put("email", appointment.getEmail());
+            appointmentDetails.put("doctorStatus", appointment.getDoctorStatus());
+
+            // Get the time for the appointment from the DateAndTimeInfo map
+            String appointmentTime = appointmentIdToTimeMap.get(appointment.getId());
+            appointmentDetails.put("time", appointmentTime);
+
+            // Map issueIds to their names
+            List<String> issueNames = appointment.getIssueIds().stream()
+                    .map(issueIdToNameMap::get)
+                    .collect(Collectors.toList());
+            appointmentDetails.put("issues", issueNames);
+
+            result.add(appointmentDetails);
+        }
+
+        return result;
+    }
+
 
 }
