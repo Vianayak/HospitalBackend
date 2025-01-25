@@ -19,15 +19,24 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
 
 	public Optional<BookAppointment> findById(Integer appointmentId);
 	
-	@Query("SELECT new com.hospital.dto.AppointmentStatsDTO(" +
-	           "COUNT(b.id), " +
-	           "SUM(CASE WHEN b.doctorStatus = com.hospital.enums.DoctorStatus.ACCEPTED THEN 1 ELSE 0 END), " + // Treated patients
-	           "SUM(CASE WHEN d.date <= :date THEN 1 ELSE 0 END), " + // Appointments until the given date
-	           "d.regestrationNum) " + // Include doctor's registration number
-	           "FROM BookAppointment b " +
-	           "JOIN DateAndTimeInfo d ON b.id = d.appointmentId " +
-	           "WHERE d.date <= :date AND d.regestrationNum = :doctorRegNum")
-	AppointmentStatsDTO getAppointmentStatsTillDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
+	// Total appointments for a specific date
+	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d WHERE d.regestrationNum = :doctorRegNum AND d.date = :date")
+    Long getTotalAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
+
+    // Accepted appointments for a specific date
+	@Query("SELECT COUNT(d) " +
+		       "FROM DateAndTimeInfo d " +
+		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
+		       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.doctorStatus = 'ACCEPTED'")
+		Long getAcceptedAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
+
+
+	@Query("SELECT COUNT(d) " +
+		       "FROM DateAndTimeInfo d " +
+		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
+		       "WHERE d.regestrationNum = :doctorRegNum AND b.doctorStatus = 'ACCEPTED'")
+		Long getTotalAcceptedAppointments(@Param("doctorRegNum") String doctorRegNum);
+
 
 	
 	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);

@@ -256,7 +256,20 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
     
     @Override
     public AppointmentStatsDTO getStatsForDate(String date,String doctorRegNum) {
-        return repo.getAppointmentStatsTillDate(date,doctorRegNum);
+    	AppointmentStatsDTO stats = new AppointmentStatsDTO();
+
+        // Total appointments for the specific date
+        stats.setTotalAppointments(repo.getTotalAppointmentsForDate(date, doctorRegNum));
+
+        // Accepted appointments for the specific date
+        stats.setAcceptedAppointments(repo.getAcceptedAppointmentsForDate(date, doctorRegNum));
+
+        // Total treated patients by the doctor till the given date
+        stats.setTotalTreatedPatientsByDoctor(repo.getTotalAcceptedAppointments(doctorRegNum));
+
+        stats.setDoctorRegNum(doctorRegNum);
+
+        return stats;
     }
     
     @Override

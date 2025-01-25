@@ -11,14 +11,7 @@ public class AppointmentStatsDTO {
 
    
 
-	public AppointmentStatsDTO(Long totalAppointments, Long acceptedAppointments, Long totalTreatedPatientsByDoctor,
-			String doctorRegNum) {
-		super();
-		this.totalAppointments = totalAppointments;
-		this.acceptedAppointments = acceptedAppointments;
-		this.totalTreatedPatientsByDoctor = totalTreatedPatientsByDoctor;
-		this.doctorRegNum = doctorRegNum;
-	}
+
 
 	public Long getTotalAppointments() {
 		return totalAppointments;
