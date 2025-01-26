@@ -24,5 +24,10 @@ public class IssueServiceImpl implements IssueService {
 	public List<Issue> getIssuesByIds(List<Long> issueIds) {
         return issueRepository.findAllById(issueIds);
     }
+	@Override
+	public List<Issue> getAllIssues() {
+		// TODO Auto-generated method stub
+		return issueRepository.findAll();
+	}
 
 }

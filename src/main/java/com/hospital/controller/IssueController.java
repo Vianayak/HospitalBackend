@@ -26,5 +26,12 @@ public class IssueController {
         List<Issue> issues = issueService.getIssuesByKeyword(keyword);
         return ResponseEntity.ok(issues);
     }
+    
+    @GetMapping("/all")
+    public ResponseEntity<List<Issue>> getIssues(){
+    	List<Issue> issues=issueService.getAllIssues();
+		return ResponseEntity.ok(issues);
+    	
+    }
 }
 

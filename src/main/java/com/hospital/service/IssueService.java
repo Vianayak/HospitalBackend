@@ -10,4 +10,6 @@ public interface IssueService {
 	public List<Issue> getIssuesByKeyword(String keyword);
 
 	List<Issue> getIssuesByIds(List<Long> issueIds);
+
+	public List<Issue> getAllIssues();
 }
