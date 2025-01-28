@@ -116,8 +116,13 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	                .field("user", userData)
 	                .asString(); // Send the request and get the response as a string
 
-	        // Return the response body
-	        if (response.isSuccess()) {
+	        // Check if user already exists (assuming 409 Conflict status code or similar)
+	        if (response.getStatus() == 500) { // Conflict: User already exists
+	            // Log that the user already exists and skip registration
+	            System.out.println("Patient already exists: " + userData);
+	            return "User already exists, no new registration.";
+	        } else if (response.isSuccess()) {
+	            // Return the response body if successful
 	            return response.getBody();
 	        } else {
 	            throw new RuntimeException("Error: " + response.getStatus() + " - " + response.getBody());
