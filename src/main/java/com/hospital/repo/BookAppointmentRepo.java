@@ -20,26 +20,26 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
 	public Optional<BookAppointment> findById(Integer appointmentId);
 	
 	// Total appointments for a specific date
-	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d WHERE d.regestrationNum = :doctorRegNum AND d.date = :date")
-    Long getTotalAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
-
-    // Accepted appointments for a specific date
-	@Query("SELECT COUNT(d) " +
-		       "FROM DateAndTimeInfo d " +
-		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
-		       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.doctorStatus = 'ACCEPTED'")
-		Long getAcceptedAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
-
-
-	@Query("SELECT COUNT(d) " +
-		       "FROM DateAndTimeInfo d " +
-		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
-		       "WHERE d.regestrationNum = :doctorRegNum AND b.doctorStatus = 'ACCEPTED'")
-		Long getTotalAcceptedAppointments(@Param("doctorRegNum") String doctorRegNum);
-
-
-	
-	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);
+//	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d WHERE d.regestrationNum = :doctorRegNum AND d.date = :date")
+//    Long getTotalAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
+//
+//    // Accepted appointments for a specific date
+//	@Query("SELECT COUNT(d) " +
+//		       "FROM DateAndTimeInfo d " +
+//		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
+//		       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.doctorStatus = 'ACCEPTED'")
+//		Long getAcceptedAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
+//
+//
+//	@Query("SELECT COUNT(d) " +
+//		       "FROM DateAndTimeInfo d " +
+//		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
+//		       "WHERE d.regestrationNum = :doctorRegNum AND b.doctorStatus = 'ACCEPTED'")
+//		Long getTotalAcceptedAppointments(@Param("doctorRegNum") String doctorRegNum);
+//
+//
+//	
+//	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);
 	
 	
 	@Query("SELECT SUM(a.amount) FROM BookAppointment a " +

@@ -27,28 +27,31 @@ public class BookAppointment {
 	private String orderStatus;
 	private String razorpayOrderId;
 	private Integer amount;
-	@Enumerated(EnumType.STRING) // Use EnumType.ORDINAL if you prefer numbers
-    @Column(name = "doctor_status", nullable = false)
-    private DoctorStatus doctorStatus;
+	/*
+	 * @Enumerated(EnumType.STRING) // Use EnumType.ORDINAL if you prefer numbers
+	 * 
+	 * @Column(name = "doctor_status", nullable = false) private DoctorStatus
+	 * doctorStatus;
+	 */
 	
-	 @ElementCollection
-	    private List<Long> issueIds;
+	private String issue; 
 	
-	public List<Long> getIssueIds() {
-		return issueIds;
+	
+	public String getIssue() {
+		return issue;
 	}
-	public void setIssueIds(List<Long> issueIds) {
-		this.issueIds = issueIds;
+	public void setIssue(String issue) {
+		this.issue = issue;
 	}
 	public String getOrderStatus() {
 		return orderStatus;
 	}
-	public DoctorStatus getDoctorStatus() {
-		return doctorStatus;
-	}
-	public void setDoctorStatus(DoctorStatus doctorStatus) {
-		this.doctorStatus = doctorStatus;
-	}
+
+	/*
+	 * public DoctorStatus getDoctorStatus() { return doctorStatus; } public void
+	 * setDoctorStatus(DoctorStatus doctorStatus) { this.doctorStatus =
+	 * doctorStatus; }
+	 */
 	public void setOrderStatus(String orderStatus) {
 		this.orderStatus = orderStatus;
 	}

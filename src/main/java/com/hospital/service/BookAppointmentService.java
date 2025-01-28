@@ -19,13 +19,17 @@ public interface BookAppointmentService {
 
 	ResponseEntity<String> verifyPayment(Map<String, String> paymentDetails)  throws MessagingException;
 
-	void updateAppointmentStatus(int appointmentId, DoctorStatus newStatus);
+	/* void updateAppointmentStatus(int appointmentId, DoctorStatus newStatus); */
 
-	AppointmentStatsDTO getStatsForDate(String date, String doctorRegNum);
+//	AppointmentStatsDTO getStatsForDate(String date, String doctorRegNum);
 
-	List<Map<String, Object>> getAppointmentsWithIssues(String date, String doctorRegNum);
-
-	List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(String date, String doctorRegNum);
+	/*
+	 * List<Map<String, Object>> getAppointmentsWithIssues(String date, String
+	 * doctorRegNum);
+	 * 
+	 * List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(String date,
+	 * String doctorRegNum);
+	 */
 
 	Double getTodayEarnings(String doctorRegNum, String date);
 

@@ -60,41 +60,46 @@ public class BookAppointmentController {
         return bookApp.verifyPayment(paymentDetails);
     }
 	
-	@PutMapping("/{id}/")
-    public ResponseEntity<String> updateAppointmentStatus(
-            @PathVariable int id,
-            @RequestParam("status") DoctorStatus status) {
-        
-        // Update the status
-		bookApp.updateAppointmentStatus(id, status);
-
-        return ResponseEntity.ok("Appointment status updated to " + status);
-    }
+	/*
+	 * @PutMapping("/{id}/") public ResponseEntity<String> updateAppointmentStatus(
+	 * 
+	 * @PathVariable int id,
+	 * 
+	 * @RequestParam("status") DoctorStatus status) {
+	 * 
+	 * // Update the status bookApp.updateAppointmentStatus(id, status);
+	 * 
+	 * return ResponseEntity.ok("Appointment status updated to " + status); }
+	 */
 	
 	
-	@GetMapping("/stats")
-    public ResponseEntity<AppointmentStatsDTO> getStats(@RequestParam("date") String date,@RequestParam("doctorRegNum") String regNum) {
-        AppointmentStatsDTO stats = bookApp.getStatsForDate(date,regNum);
-        return ResponseEntity.ok(stats);
-    }
+//	@GetMapping("/stats")
+//    public ResponseEntity<AppointmentStatsDTO> getStats(@RequestParam("date") String date,@RequestParam("doctorRegNum") String regNum) {
+//        AppointmentStatsDTO stats = bookApp.getStatsForDate(date,regNum);
+//        return ResponseEntity.ok(stats);
+//    }
 	
 	
-	@GetMapping("/appointments-with-issues")
-    public List<Map<String, Object>> getAppointmentsWithIssues(
-            @RequestParam String date,
-            @RequestParam String doctorRegNum) {
-
-        return bookApp.getAppointmentsWithIssues(date, doctorRegNum);
-    }
-	
-	
-	@GetMapping("/appointments-with-issues-accepted")
-    public List<Map<String, Object>> getAppointmentsWithIssuesForAccepted(
-            @RequestParam String date,
-            @RequestParam String doctorRegNum) {
-
-        return bookApp.getAppointmentsWithIssuesForAccepted(date, doctorRegNum);
-    }
+	/*
+	 * @GetMapping("/appointments-with-issues") public List<Map<String, Object>>
+	 * getAppointmentsWithIssues(
+	 * 
+	 * @RequestParam String date,
+	 * 
+	 * @RequestParam String doctorRegNum) {
+	 * 
+	 * return bookApp.getAppointmentsWithIssues(date, doctorRegNum); }
+	 * 
+	 * 
+	 * @GetMapping("/appointments-with-issues-accepted") public List<Map<String,
+	 * Object>> getAppointmentsWithIssuesForAccepted(
+	 * 
+	 * @RequestParam String date,
+	 * 
+	 * @RequestParam String doctorRegNum) {
+	 * 
+	 * return bookApp.getAppointmentsWithIssuesForAccepted(date, doctorRegNum); }
+	 */
 	
 	@GetMapping("/earnings")
     public ResponseEntity<Map<String, Double>> getEarnings(

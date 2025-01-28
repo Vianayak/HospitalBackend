@@ -17,7 +17,15 @@ public class AppointmentDto {
 	private String scheduledDate;
 	private String scheduledTime;
 	private String slot;
-	private List<Long> issueIds;
+	private String issue;
+
+	public String getIssue() {
+		return issue;
+	}
+
+	public void setIssue(String issue) {
+		this.issue = issue;
+	}
 
 	public String getFirstName() {
 		return firstName;
@@ -125,13 +133,7 @@ public class AppointmentDto {
 		this.slot = slot;
 	}
 
-	public List<Long> getIssueIds() {
-		return issueIds;
-	}
-
-	public void setIssueIds(List<Long> issueIds) {
-		this.issueIds = issueIds;
-	}
+	
 
 	
 
