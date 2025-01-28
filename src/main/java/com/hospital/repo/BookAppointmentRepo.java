@@ -1,6 +1,8 @@
 package com.hospital.repo;
 
-import java.time.LocalDate;
+import com.hospital.dto.AppointmentDto;
+
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.hospital.dto.AppointmentStatsDTO;
-import com.hospital.enums.DoctorStatus;
+import com.hospital.dto.AppointmentDto;
 import com.hospital.model.BookAppointment;
 @Repository
 public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Integer>{
@@ -19,27 +20,15 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
 
 	public Optional<BookAppointment> findById(Integer appointmentId);
 	
-	// Total appointments for a specific date
-//	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d WHERE d.regestrationNum = :doctorRegNum AND d.date = :date")
-//    Long getTotalAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
-//
-//    // Accepted appointments for a specific date
-//	@Query("SELECT COUNT(d) " +
-//		       "FROM DateAndTimeInfo d " +
-//		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
-//		       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.doctorStatus = 'ACCEPTED'")
-//		Long getAcceptedAppointmentsForDate(@Param("date") String date, @Param("doctorRegNum") String doctorRegNum);
-//
-//
-//	@Query("SELECT COUNT(d) " +
-//		       "FROM DateAndTimeInfo d " +
-//		       "JOIN BookAppointment b ON d.appointmentId = b.id " +
-//		       "WHERE d.regestrationNum = :doctorRegNum AND b.doctorStatus = 'ACCEPTED'")
-//		Long getTotalAcceptedAppointments(@Param("doctorRegNum") String doctorRegNum);
-//
-//
-//	
-//	List<BookAppointment> findByIdInAndDoctorStatus(List<Integer> appointmentIds, DoctorStatus status);
+	
+	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d JOIN BookAppointment a ON a.id = d.appointmentId WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND a.orderStatus='captured'")
+	Long getTodaysAppointments(@Param("doctorRegNum") String doctorRegNum, @Param("date") String date);
+	
+	
+	
+	@Query("SELECT COUNT(d) FROM DateAndTimeInfo d JOIN BookAppointment a ON a.id = d.appointmentId WHERE d.regestrationNum = :doctorRegNum AND a.orderStatus='captured'")
+	Long getTotalAppointments(@Param("doctorRegNum") String doctorRegNum);
+	
 	
 	
 	@Query("SELECT SUM(a.amount) FROM BookAppointment a " +
@@ -52,6 +41,15 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
             "JOIN DateAndTimeInfo d ON a.id = d.appointmentId " +
             "WHERE a.orderStatus = 'captured' AND d.regestrationNum = :doctorRegNum")
     Double calculateTotalEarningsForDoctor(@Param("doctorRegNum") String doctorRegNum);
+
+    
+    @Query("SELECT new com.hospital.dto.AppointmentDto(b.firstName, b.lastName, b.issue, d.time) " +
+    	       "FROM BookAppointment b " +
+    	       "JOIN DateAndTimeInfo d ON b.id = d.appointmentId " +
+    	       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.orderStatus='captured'")
+    	public List<AppointmentDto> findAppointmentsForDate(@Param("doctorRegNum") String doctorRegNum, @Param("date") String date);
+
+
 
 
 

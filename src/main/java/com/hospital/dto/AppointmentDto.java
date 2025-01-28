@@ -18,6 +18,14 @@ public class AppointmentDto {
 	private String scheduledTime;
 	private String slot;
 	private String issue;
+	private String time;
+	
+	public AppointmentDto(String firstName, String lastName, String issue, String time) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.issue = issue;
+        this.time = time;
+    }
 
 	public String getIssue() {
 		return issue;
@@ -131,6 +139,14 @@ public class AppointmentDto {
 
 	public void setSlot(String slot) {
 		this.slot = slot;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 	

@@ -21,7 +21,7 @@ public interface BookAppointmentService {
 
 	/* void updateAppointmentStatus(int appointmentId, DoctorStatus newStatus); */
 
-//	AppointmentStatsDTO getStatsForDate(String date, String doctorRegNum);
+	AppointmentStatsDTO getStatsForDate(String date, String doctorRegNum);
 
 	/*
 	 * List<Map<String, Object>> getAppointmentsWithIssues(String date, String
@@ -34,4 +34,6 @@ public interface BookAppointmentService {
 	Double getTodayEarnings(String doctorRegNum, String date);
 
 	Double getTotalEarnings(String doctorRegNum);
+
+	List<AppointmentDto> getAppointmentsForDate(String doctorRegNum, String appointmentDate);
 }
