@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hospital.model.DateAndTimeInfo;
+import com.hospital.dto.DoctorScheduleDTO;
 import com.hospital.model.DoctorsInfo;
 import com.hospital.service.DateAndTimeInfoService;
 import com.hospital.service.DoctorsInfoService;
@@ -65,16 +65,19 @@ public class DoctorsInfoController {
         return ResponseEntity.status(HttpStatus.OK).body(doctors);
     }
 	
-	@GetMapping("/doctor-schedule")
-	public ResponseEntity<List<DateAndTimeInfo>> getDoctorSchedule(@RequestParam String regNum) {
-	    List<DateAndTimeInfo> doctorSchedule = dateInfoService.getDoctorSchedule(regNum);  // Adjusted to get list from service
-
-	    if (doctorSchedule.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // Return NO_CONTENT if list is empty
-	    }
-
-	    return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);  // Return OK with the list of doctor schedules
-	}
+	/*
+	 * @GetMapping("/doctor-schedule") public ResponseEntity<List<DateAndTimeInfo>>
+	 * getDoctorSchedule(@RequestParam String regNum) { List<DateAndTimeInfo>
+	 * doctorSchedule = dateInfoService.getDoctorSchedule(regNum); // Adjusted to
+	 * get list from service
+	 * 
+	 * if (doctorSchedule.isEmpty()) { return
+	 * ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Return NO_CONTENT if
+	 * list is empty }
+	 * 
+	 * return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule); // Return
+	 * OK with the list of doctor schedules }
+	 */
 	
 	@GetMapping("/{doctorId}")
     public DoctorsInfo getDoctorById(@PathVariable int doctorId) {
@@ -94,4 +97,16 @@ public class DoctorsInfoController {
 
 	    return ResponseEntity.ok(info);
 	}
+	
+	@GetMapping("/doctor-schedule")
+	public ResponseEntity<List<DoctorScheduleDTO>> getDoctorSchedule(@RequestParam String regNum) {
+	    List<DoctorScheduleDTO> doctorSchedule = dateInfoService.getDoctorScheduleOne(regNum);
+
+	    if (doctorSchedule.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // Return NO_CONTENT if list is empty
+	    }
+
+	    return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);  // Return OK with the schedule
+	}
+
 }
