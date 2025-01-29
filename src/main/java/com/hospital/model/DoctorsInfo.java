@@ -21,6 +21,7 @@ public class DoctorsInfo {
 	 private String imagePath;
 	 private String email;
 	    private String mobileNumber;
+	    private int consultationFee;
 
 	    public String getEmail() {
 			return email;
@@ -98,5 +99,13 @@ public class DoctorsInfo {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public int getConsultationFee() {
+		return consultationFee;
+	}
+
+	public void setConsultationFee(int consultationFee) {
+		this.consultationFee = consultationFee;
 	}
 }
