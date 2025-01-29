@@ -6,7 +6,25 @@ import org.springframework.stereotype.Component;
 public class AppointmentStatsDTO {
     private Long todayAppointments;
     private Long totalAppointments;
-    private String doctorRegNum;
+    private Long todayConsultations;
+    private Long totalConsultations;
+    public Long getTodayConsultations() {
+		return todayConsultations;
+	}
+
+	public void setTodayConsultations(Long todayConsultations) {
+		this.todayConsultations = todayConsultations;
+	}
+
+	public Long getTotalConsultations() {
+		return totalConsultations;
+	}
+
+	public void setTotalConsultations(Long totalConsultations) {
+		this.totalConsultations = totalConsultations;
+	}
+
+	private String doctorRegNum;
 
    
 

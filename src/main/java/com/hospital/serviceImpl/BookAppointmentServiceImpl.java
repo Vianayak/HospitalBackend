@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hospital.dto.AppointmentDto;
 import com.hospital.dto.AppointmentStatsDTO;
+import com.hospital.dto.DoctorDetailsDto;
 import com.hospital.dto.UserDto;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
@@ -312,6 +313,39 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
     public List<AppointmentDto> getAppointmentsForDate(String doctorRegNum, String appointmentDate) {
         return repo.findAppointmentsForDate(doctorRegNum, appointmentDate);
     }
+
+	@Override
+	public List<DoctorDetailsDto> getDoctorsForDate(String email, String date) {
+		// TODO Auto-generated method stub
+		return repo.findDoctorDetailsOnDate(email, date);
+	}
+
+	@Override
+	public Double getTodayPayments(String email, String date) {
+		// TODO Auto-generated method stub
+		return repo.calculatePaymentsForPatientDate(email, date);
+	}
+
+	@Override
+	public Double getTotalPayments(String email) {
+		// TODO Auto-generated method stub
+		return repo.calculatePaymentsForPatient(email);
+	}
+
+	@Override
+	public AppointmentStatsDTO getPatientStatsForDate(String date, String email) {
+		// TODO Auto-generated method stub
+		
+		AppointmentStatsDTO stats = new AppointmentStatsDTO();
+		
+		stats.setTodayConsultations(repo.getTodaysConsultations(email, date));
+        
+        stats.setTotalConsultations(repo.getTotalConsultations(email));
+        
+       
+
+        return stats;
+	}
 
 
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.hospital.dto.AppointmentDto;
 import com.hospital.dto.AppointmentStatsDTO;
+import com.hospital.dto.DoctorDetailsDto;
 import com.hospital.enums.DoctorStatus;
 import com.hospital.model.BookAppointment;
 import com.razorpay.RazorpayException;
@@ -36,4 +37,12 @@ public interface BookAppointmentService {
 	Double getTotalEarnings(String doctorRegNum);
 
 	List<AppointmentDto> getAppointmentsForDate(String doctorRegNum, String appointmentDate);
+
+	public List<DoctorDetailsDto> getDoctorsForDate(String email, String date);
+
+	public Double getTodayPayments(String email, String date);
+
+	public Double getTotalPayments(String email);
+
+	public AppointmentStatsDTO getPatientStatsForDate(String date, String email);
 }

@@ -1,7 +1,7 @@
 package com.hospital.repo;
 
 import com.hospital.dto.AppointmentDto;
-
+import com.hospital.dto.DoctorDetailsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +48,40 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
     	       "JOIN DateAndTimeInfo d ON b.id = d.appointmentId " +
     	       "WHERE d.regestrationNum = :doctorRegNum AND d.date = :date AND b.orderStatus='captured'")
     	public List<AppointmentDto> findAppointmentsForDate(@Param("doctorRegNum") String doctorRegNum, @Param("date") String date);
+    
+    
+    
+    @Query("SELECT new com.hospital.dto.DoctorDetailsDto(di.name, d.time) " +
+    	       "FROM BookAppointment b " +
+    	       "JOIN DateAndTimeInfo d ON d.appointmentId = b.id " +
+    	       "JOIN DoctorsInfo di ON di.regestrationNum = d.regestrationNum " +
+    	       "WHERE b.email = :email " +
+    	       "AND d.date = :date AND b.orderStatus='captured'")
+    	public List<DoctorDetailsDto> findDoctorDetailsOnDate(@Param("email") String email, @Param("date") String date);
+
+
+    @Query("SELECT SUM(b.amount) FROM BookAppointment b " +
+    	       "JOIN DateAndTimeInfo d ON d.appointmentId=b.id WHERE d.date = :date " +
+    	       "AND b.email = :email AND b.orderStatus = 'captured'")
+    	Double calculatePaymentsForPatientDate(@Param("email") String email, @Param("date") String date);
+
+
+    @Query("SELECT SUM(b.amount) FROM BookAppointment b WHERE b.email = :email AND b.orderStatus = 'captured'")
+    Double calculatePaymentsForPatient(@Param("email") String email);
+    
+    
+    
+    @Query("SELECT COUNT(b) FROM BookAppointment b " +
+    	       "JOIN DateAndTimeInfo d ON d.appointmentId=b.id WHERE b.email = :email " +
+    	       "AND d.date = :date AND b.orderStatus = 'captured'")
+    	Long getTodaysConsultations(@Param("email") String email, @Param("date") String date);
+	
+	
+	
+    @Query("SELECT COUNT(b) FROM BookAppointment b WHERE b.email = :email AND b.orderStatus = 'captured'")
+    Long getTotalConsultations(@Param("email") String email);
+    
+    
 
 
 

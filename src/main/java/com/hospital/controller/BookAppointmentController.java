@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital.dto.AppointmentDto;
 import com.hospital.dto.AppointmentStatsDTO;
+import com.hospital.dto.DoctorDetailsDto;
 import com.hospital.enums.DoctorStatus;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.Issue;
@@ -93,5 +94,35 @@ public class BookAppointmentController {
             @RequestParam("date") String date) {
         List<AppointmentDto> appointments = bookApp.getAppointmentsForDate(doctorRegNum, date);
         return ResponseEntity.ok(appointments);
+    }
+	
+	
+	@GetMapping("/doctors-for-date")
+	public ResponseEntity<List<DoctorDetailsDto>> getDoctorsForDate(
+			@RequestParam("email") String email,
+            @RequestParam("date") String date){
+		List<DoctorDetailsDto> lst=bookApp.getDoctorsForDate(email,date);
+		return ResponseEntity.ok(lst);
+	}
+	
+	@GetMapping("/payments")
+    public ResponseEntity<Map<String, Double>> getPayments(
+            @RequestParam String email,
+            @RequestParam String date) {
+        
+        Map<String, Double> earnings = new HashMap<>();
+        Double todayPayments = bookApp.getTodayPayments(email, date);
+        Double totalPayments = bookApp.getTotalPayments(email);
+
+        earnings.put("todayPayments", todayPayments != null ? todayPayments : 0.0);
+        earnings.put("totalPayments", totalPayments != null ? totalPayments : 0.0);
+
+        return ResponseEntity.ok(earnings);
+    }
+	
+	@GetMapping("/patient-stats")
+    public ResponseEntity<AppointmentStatsDTO> getPatientStats(@RequestParam("date") String date,@RequestParam("email") String email) {
+       AppointmentStatsDTO stats = bookApp.getPatientStatsForDate(date,email);
+        return ResponseEntity.ok(stats);
     }
 }
