@@ -90,22 +90,6 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 		}
 		BookAppointment app=saveAppointmentDetails(dto);
 		saveScheduleDetails(dto,app.getId());
-		UserDto userDto=new UserDto();
-		userDto.setEmail(app.getEmail());
-		userDto.setFirstName(app.getFirstName());
-		userDto.setLastName(app.getLastName());
-		userDto.setMobileNumber(Long.toString(app.getMobile()));
-		userDto.setRole("patient");
-		try {
-	        ObjectMapper objectMapper = new ObjectMapper();
-	        String userData = objectMapper.writeValueAsString(userDto);
-	        
-	        // Send the JSON string to the login service
-	        String message = sendToLoginService(userData, null);
-	    } catch (Exception e) {
-	        throw new RuntimeException("Error converting UserDto to JSON: " + e.getMessage(), e);
-	    }
-		
 	}
 	
 	
@@ -114,14 +98,10 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	        // Prepare the request
 	        kong.unirest.HttpResponse<String> response = Unirest.post("http://localhost:8082/api/user/register")
 	                .field("user", userData)
-	                .asString(); // Send the request and get the response as a string
-
-	        // Check if user already exists (assuming 409 Conflict status code or similar)
-	        if (response.getStatus() == 500) { // Conflict: User already exists
-	            // Log that the user already exists and skip registration
-	            System.out.println("Patient already exists: " + userData);
-	            return "User already exists, no new registration.";
-	        } else if (response.isSuccess()) {
+	                .connectTimeout(10000)  // 10 seconds
+	                .socketTimeout(10000)   // 10 seconds
+	                .asString(); 
+	        if (response.isSuccess()) {
 	            // Return the response body if successful
 	            return response.getBody();
 	        } else {
@@ -181,6 +161,21 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 				MeetingDetails meet=saveMeetingDetails(app,doctor);
 				sendMeetingDetails(meet,app,doctor,info);
 				emailService.sendAppointmentConfirmation(app.getEmail(), app.getFirstName(), app.getLastName(), info.getDate(), info.getTime(), doctor.getName(), doctor.getSpecialization(), app.getAmount());
+				UserDto userDto=new UserDto();
+				userDto.setEmail(app.getEmail());
+				userDto.setFirstName(app.getFirstName());
+				userDto.setLastName(app.getLastName());
+				userDto.setMobileNumber(Long.toString(app.getMobile()));
+				userDto.setRole("patient");
+				try {
+			        ObjectMapper objectMapper = new ObjectMapper();
+			        String userData = objectMapper.writeValueAsString(userDto);
+			        
+			        // Send the JSON string to the login service
+			        String message = sendToLoginService(userData, null);
+			    } catch (Exception e) {
+			        throw new RuntimeException("Error converting UserDto to JSON: " + e.getMessage(), e);
+			    }
 				return ResponseEntity.ok("Payment verified and status updated.");
 			}
 		}

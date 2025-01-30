@@ -64,14 +64,17 @@ public class DateAndTimeInfoServiceImpl implements DateAndTimeInfoService{
 	    for (DoctorAvailableSlots slot : availableSlots) {
 	        String date = slot.getDate();
 
-	        // Get the schedule for the current date
-	        DoctorScheduleDTO scheduleDTO = scheduleMap.get(date);
-	        if (scheduleDTO != null) {
-	            // Get available slots for the current date
-	            List<String> availableSlotsForDate = scheduleDTO.getAvailableSlots() != null ? scheduleDTO.getAvailableSlots() : new ArrayList<>();
-	            availableSlotsForDate.add(slot.getTime());  // Add available slot time
-	            scheduleDTO.setAvailableSlots(availableSlotsForDate);
-	        }
+	        // Get the schedule for the current date, or create a new one if it doesn't exist
+	        DoctorScheduleDTO scheduleDTO = scheduleMap.getOrDefault(date, new DoctorScheduleDTO());
+	        scheduleDTO.setDate(date);
+
+	        // Get available slots for the current date
+	        List<String> availableSlotsForDate = scheduleDTO.getAvailableSlots() != null ? scheduleDTO.getAvailableSlots() : new ArrayList<>();
+	        availableSlotsForDate.add(slot.getTime());  // Add available slot time
+	        scheduleDTO.setAvailableSlots(availableSlotsForDate);
+
+	        // Update the schedule map with the new or modified schedule
+	        scheduleMap.put(date, scheduleDTO);
 	    }
 
 	    // Return the values from the map as the final list of DoctorScheduleDTOs
