@@ -202,6 +202,11 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 		meet.setAppointmentId(app.getId());
 		meet.setMeetingRoom(generateMeetingRoom(app,doctor));
 		meet.setPassword(hashPassword(generatePassword(app.getFirstName(),doctor.getRegestrationNum())));
+		String meetingURL = "https://meet.jit.si/" + meet.getMeetingRoom();
+		String doctorURL = meetingURL + "?config.startWithAudioMuted=true";
+		String patientURL = meetingURL + "?config.startWithAudioMuted=true&config.prejoinPageEnabled=false";
+		meet.setPatientUrl(patientURL);
+		meet.setDoctorUrl(doctorURL);
 		return meetRepo.save(meet);
 	}
 	

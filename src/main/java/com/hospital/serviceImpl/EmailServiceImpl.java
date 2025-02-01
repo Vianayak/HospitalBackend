@@ -38,7 +38,6 @@ public class EmailServiceImpl implements EmailService {
 				+ doctorName + "<br/>" + "Specialty: " + specialty + "<br/>" + "Clinic Name: Jaya Hospitals<br/>"
 				+ "Location: 123 Health Avenue, Suite 456, New York, NY 10001<br/><br/>" + "<b>Payment Details</b><br/>"
 				+ "Payment Status: Paid<br/>" + "Amount Paid: " + amount + "<br/>"
-				+ "Payment Method: Credit Card<br/><br/>"
 				+ "Please arrive 10 minutes early for your appointment. Bring any previous medical records if applicable.<br/><br/>"
 				+ "<b>Contact Information</b><br/>"
 				+ "For any queries, contact us at (123) 456-7890 or support@heartcareclinic.com.<br/><br/>"

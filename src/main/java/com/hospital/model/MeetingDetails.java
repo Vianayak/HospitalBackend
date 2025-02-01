@@ -12,6 +12,20 @@ public class MeetingDetails {
 	private String meetingRoom;
 	private String password;
 	private int appointmentId;
+	private String patientUrl;
+	private String doctorUrl;
+	public String getPatientUrl() {
+		return patientUrl;
+	}
+	public void setPatientUrl(String patientUrl) {
+		this.patientUrl = patientUrl;
+	}
+	public String getDoctorUrl() {
+		return doctorUrl;
+	}
+	public void setDoctorUrl(String doctorUrl) {
+		this.doctorUrl = doctorUrl;
+	}
 	public int getAppointmentId() {
 		return appointmentId;
 	}
