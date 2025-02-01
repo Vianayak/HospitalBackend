@@ -105,6 +105,10 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	            // Return the response body if successful
 	            return response.getBody();
 	        } else {
+	        	if (response.getStatus() == 500 && response.getBody().contains("Email already exists")) {
+	                // Handle the specific error and return a custom message
+	                return "Error: Email already exists.";
+	            }
 	            throw new RuntimeException("Error: " + response.getStatus() + " - " + response.getBody());
 	        }
 	    } catch (Exception e) {
@@ -155,17 +159,12 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 			BookAppointment appointment = repo.findByRazorpayOrderId(orderId);
 			if (appointment != null) {
 				appointment.setOrderStatus("captured");
-				BookAppointment app=repo.save(appointment);
-				DateAndTimeInfo info=scheduleRepo.findByAppointmentId(app.getId());
-				DoctorsInfo doctor = doctorRepo.findByRegestrationNum(info.getRegestrationNum());
-				MeetingDetails meet=saveMeetingDetails(app,doctor);
-				sendMeetingDetails(meet,app,doctor,info);
-				emailService.sendAppointmentConfirmation(app.getEmail(), app.getFirstName(), app.getLastName(), info.getDate(), info.getTime(), doctor.getName(), doctor.getSpecialization(), app.getAmount());
+				
 				UserDto userDto=new UserDto();
-				userDto.setEmail(app.getEmail());
-				userDto.setFirstName(app.getFirstName());
-				userDto.setLastName(app.getLastName());
-				userDto.setMobileNumber(Long.toString(app.getMobile()));
+				userDto.setEmail(appointment.getEmail());
+				userDto.setFirstName(appointment.getFirstName());
+				userDto.setLastName(appointment.getLastName());
+				userDto.setMobileNumber(Long.toString(appointment.getMobile()));
 				userDto.setRole("patient");
 				try {
 			        ObjectMapper objectMapper = new ObjectMapper();
@@ -173,6 +172,12 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 			        
 			        // Send the JSON string to the login service
 			        String message = sendToLoginService(userData, null);
+			        BookAppointment app=repo.save(appointment);
+					DateAndTimeInfo info=scheduleRepo.findByAppointmentId(app.getId());
+					DoctorsInfo doctor = doctorRepo.findByRegestrationNum(info.getRegestrationNum());
+					MeetingDetails meet=saveMeetingDetails(app,doctor);
+					sendMeetingDetails(meet,app,doctor,info);
+					emailService.sendAppointmentConfirmation(app.getEmail(), app.getFirstName(), app.getLastName(), info.getDate(), info.getTime(), doctor.getName(), doctor.getSpecialization(), app.getAmount());
 			    } catch (Exception e) {
 			        throw new RuntimeException("Error converting UserDto to JSON: " + e.getMessage(), e);
 			    }
