@@ -1,7 +1,6 @@
 package com.hospital.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,12 +21,32 @@ public class EmailServiceImpl implements EmailService {
 	private JavaMailSender mailSender;
 
 	@Override
-	public void sendOTPEmail(String email, String otp) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(email);
-		message.setSubject("Your OTP Code");
-		message.setText("Dear User,\n\nYour OTP is: " + otp + "\n\nThis OTP is valid for 5 minutes.");
+	public void sendOTPEmail(String email, String otp) throws MessagingException {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+		helper.setTo(email);
+		helper.setSubject("Your OTP Code - Jaya Hospitals");
+
+		// Get the email content with dynamic values
+		String content = getOtpEmailTemplate(otp);
+		helper.setText(content, true); // true indicates the content is HTML
+
 		mailSender.send(message);
+	}
+	
+	
+	public String getOtpEmailTemplate(String otp) {
+	    return "Hi, <br/><br/>"
+	            + "Your OTP is: <b>" + otp + "</b><br/><br/>"
+	            + "This OTP is valid for 5 minutes.<br/><br/>"
+	            + "If you did not request this OTP, please disregard this email.<br/><br/>"
+	            + "Best regards,<br/>"
+	            + "The Jaya Hospitals Team<br/><br/>"
+	            + "Jaya Hospitals<br/>"
+	            + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
+	            + "Phone: (123) 456-7890<br/>"
+	            + "Website: <a href='http://www.jayahospitals.com'>www.jayahospitals.com</a>";
 	}
 
 	public String getEmailTemplate(String firstName, String lastName, String date, String time, String doctorName,

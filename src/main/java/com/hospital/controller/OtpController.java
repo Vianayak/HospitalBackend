@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hospital.service.EmailService;
 import com.hospital.serviceImpl.OtpService;
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
@@ -33,7 +34,7 @@ public class OtpController {
 	private EmailService emailService;
 
 	@PostMapping("/sendOtp")
-    public ResponseEntity<String> sendOTP(@RequestParam String email) {
+    public ResponseEntity<String> sendOTP(@RequestParam String email) throws MessagingException {
         // Validate email format
         if (!isValidEmail(email)) {
             return ResponseEntity.badRequest().body("Invalid email format.");
