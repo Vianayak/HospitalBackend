@@ -11,4 +11,6 @@ import com.hospital.model.DoctorAvailableSlots;
 public interface DoctorAvailableSlotsRepository extends JpaRepository<DoctorAvailableSlots, Integer>{
 
 	List<DoctorAvailableSlots> findByDocRegNum(String docRegNum);  // Fetch available slots
+
+	List<DoctorAvailableSlots> findByDocRegNumAndDateIn(String docRegNum, List<String> requestedDates);
 }
