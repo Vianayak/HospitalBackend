@@ -10,4 +10,6 @@ public interface MeetingService {
 	public String getMeetingDetails(String meetId);
 
 	public List<MeetingDto> getMeetingListOnDate(String date, String email);
+
+	List<MeetingDto> getDoctorMeetingListOnDate(String date, String email);
 }

@@ -4,7 +4,7 @@ public class MeetingDto {
 
 	private String name;
 	private String time;
-	private String patientUrl;
+	private String url;
 	public String getName() {
 		return name;
 	}
@@ -17,16 +17,17 @@ public class MeetingDto {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public MeetingDto(String name, String time, String patientUrl) {
+	public MeetingDto(String name, String time, String url) {
 		super();
 		this.name = name;
 		this.time = time;
-		this.patientUrl = patientUrl;
+		this.url = url;
 	}
-	public String getPatientUrl() {
-		return patientUrl;
+	public String getUrl() {
+		return url;
 	}
-	public void setPatientUrl(String patientUrl) {
-		this.patientUrl = patientUrl;
+	public void setUrl(String url) {
+		this.url = url;
 	}
+	
 }

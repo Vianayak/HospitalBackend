@@ -22,5 +22,17 @@ public interface MeetingDetailsRepo extends JpaRepository<MeetingDetails, Intege
 	           "JOIN MeetingDetails m ON m.appointmentId = b.id " +
 	           "WHERE b.email = :email AND d.date = :date")
 	    List<MeetingDto> findMeetingsByEmailAndDate(@Param("date") String date, @Param("email") String email);
+	
+	
+
+	@Query("SELECT new com.hospital.dto.MeetingDto(" +
+		       "CONCAT(b.firstName, ' ', b.lastName), d.time, m.doctorUrl) " +
+		       "FROM BookAppointment b " +
+		       "JOIN DateAndTimeInfo d ON d.appointmentId = b.id " +
+		       "JOIN DoctorsInfo di ON di.regestrationNum = d.regestrationNum " +
+		       "JOIN MeetingDetails m ON m.appointmentId = b.id " +
+		       "WHERE di.email = :email AND d.date = :date")
+		List<MeetingDto> findDoctorMeetingsByEmailAndDate(String date, String email);
+
 
 }

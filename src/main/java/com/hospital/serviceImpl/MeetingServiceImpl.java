@@ -30,5 +30,12 @@ public class MeetingServiceImpl implements MeetingService {
 		return repo.findMeetingsByEmailAndDate(date, email);
 	}
 
+	
+	@Override
+	public List<MeetingDto> getDoctorMeetingListOnDate(String date, String email) {
+		// TODO Auto-generated method stub
+		return repo.findDoctorMeetingsByEmailAndDate(date, email);
+	}
+
 
 }

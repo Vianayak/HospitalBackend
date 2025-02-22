@@ -43,4 +43,14 @@ public class MeetingController {
 		    }
 		    return ResponseEntity.ok(lst);
 	}
+	
+	
+	@GetMapping("/getDoctorMeetingList")
+	public ResponseEntity<List<MeetingDto>> getDoctorMeetingList(@RequestParam String date,@RequestParam String email){
+			List<MeetingDto> lst=meetService.getDoctorMeetingListOnDate(date,email);
+			if (lst.isEmpty()) {
+		        System.out.println("No meetings found.");
+		    }
+		    return ResponseEntity.ok(lst);
+	}
 }
