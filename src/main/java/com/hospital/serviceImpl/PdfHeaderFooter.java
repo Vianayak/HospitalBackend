@@ -1,16 +1,7 @@
 package com.hospital.serviceImpl;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfGState;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 
 public class PdfHeaderFooter extends PdfPageEventHelper {
     private final String patientName;
@@ -32,35 +23,48 @@ public class PdfHeaderFooter extends PdfPageEventHelper {
         Font headerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
         Font footerFont = new Font(Font.FontFamily.HELVETICA, 9);
 
-        PdfPTable headerTable = new PdfPTable(3);
-        headerTable.setTotalWidth(500);
-        headerTable.setLockedWidth(true);
-
         try {
-            // **Small Logo in Header**
-            Image headerLogo = Image.getInstance("C:/hospital_pdfs/logo.png");
-            headerLogo.scaleToFit(100, 100);
-            PdfPCell logoCell = new PdfPCell(headerLogo);
+            // **Header Table**
+            PdfPTable headerTable = new PdfPTable(2);
+            headerTable.setWidths(new float[]{3, 1}); // Adjust width ratio
+            headerTable.setTotalWidth(500);
+            headerTable.setLockedWidth(true);
+
+            // **Logo (Left)**
+            Image logo = Image.getInstance(LOGO_PATH);
+            logo.scaleToFit(100, 50);
+            PdfPCell logoCell = new PdfPCell(logo);
             logoCell.setBorder(0);
-            logoCell.setPadding(5);
+            logoCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-            // **Left: Patient Details**
-            PdfPCell leftCell = new PdfPCell(new Phrase("Patient Name: " + patientName + "\nEmail: " + patientEmail, headerFont));
-            leftCell.setBorder(0);
-
-            // **Right: Date**
-            PdfPCell rightCell = new PdfPCell(new Phrase("Date: " + java.time.LocalDate.now(), headerFont));
-            rightCell.setBorder(0);
-            rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            // **Patient Details + Date (Right)**
+            PdfPCell detailsCell = new PdfPCell(new Phrase(
+                    "Patient Name: " + patientName + 
+                    "\nEmail: " + patientEmail + 
+                    "\nDate: " + java.time.LocalDate.now(), 
+                    new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+            detailsCell.setBorder(0);
+            detailsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
             headerTable.addCell(logoCell);
-            headerTable.addCell(leftCell);
-            headerTable.addCell(rightCell);
+            headerTable.addCell(detailsCell);
 
-            headerTable.writeSelectedRows(0, -1, 50, document.top() + 50, cb);
+            // **Position Header Properly**
+            float headerY = document.top() + 40; // Adjusted top position
+            headerTable.writeSelectedRows(0, -1, 50, headerY, cb);
 
-            // **Footer**
+            // **DRAW LINE BELOW HEADER**
+            float headerLineY = headerY - 40; // Lower the line below header content
+            cb.moveTo(50, headerLineY);
+            cb.lineTo(document.getPageSize().getWidth() - 50, headerLineY);
+            cb.stroke();
+
+            // **Ensure Content Does Not Overlap Header on Next Pages**
+            document.setMargins(50, 50, document.topMargin() + 50, document.bottomMargin());
+
+            // **Footer Table**
             PdfPTable footerTable = new PdfPTable(2);
+            footerTable.setWidths(new float[]{1, 1}); // Equal widths
             footerTable.setTotalWidth(500);
             footerTable.setLockedWidth(true);
 
@@ -73,23 +77,35 @@ public class PdfHeaderFooter extends PdfPageEventHelper {
 
             footerTable.addCell(footerLeft);
             footerTable.addCell(footerRight);
-            footerTable.writeSelectedRows(0, -1, 50, document.bottom() - 20, cb); // Positioned at the bottom
+
+            // **Position Footer Properly**
+            float footerY = document.bottom() - 20;
+            footerTable.writeSelectedRows(0, -1, 50, footerY, cb);
+
+            // **DRAW LINE ABOVE FOOTER**
+            float footerLineY = footerY + 10;
+            cb.moveTo(50, footerLineY);
+            cb.lineTo(document.getPageSize().getWidth() - 50, footerLineY);
+            cb.stroke();
+
+            // **Watermark**
             addBackgroundLogo(writer);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     private void addBackgroundLogo(PdfWriter writer) {
         try {
             PdfContentByte canvas = writer.getDirectContentUnder();
             Image backgroundLogo = Image.getInstance(LOGO_PATH);
-            backgroundLogo.setAbsolutePosition(150, 250); // **Position in the center**
-            backgroundLogo.scaleToFit(300, 300); // **Resize for watermark effect**
+            backgroundLogo.setAbsolutePosition(150, 250); // Center the watermark
+            backgroundLogo.scaleToFit(300, 300);
 
             // **Set Transparency**
             PdfGState gs = new PdfGState();
-            gs.setFillOpacity(0.15f); // **5% opacity for ultra-light effect**
+            gs.setFillOpacity(0.05f); // 5% opacity for watermark effect
             canvas.saveState();
             canvas.setGState(gs);
             canvas.addImage(backgroundLogo);
@@ -99,4 +115,3 @@ public class PdfHeaderFooter extends PdfPageEventHelper {
         }
     }
 }
-

@@ -32,10 +32,13 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	
 	@Autowired
 	private DoctorNotesRepo notesRepo;
+	
+	@Autowired
+	private PdfService pdfService;
 
 	@Override
 	@Transactional
-	public List<TabletInfo> saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info) {
+	public byte[] saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info) {
 		
 		DoctorNotesModel notes=new DoctorNotesModel();
 		notes.setNotes(doctorNotes);
@@ -72,8 +75,12 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 
             tabletList.add(tabletInfo);
         }
+        
+        List<TabletInfo> lst=repo.saveAll(tabletList);
+        
+        return pdfService.generatePdf(docRegNum, patRegNum, doctorNotes, tabletList);
 
-		return repo.saveAll(tabletList);
+		
 	}
 	
 	
