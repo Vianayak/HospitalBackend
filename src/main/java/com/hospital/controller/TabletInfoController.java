@@ -47,14 +47,14 @@ import com.itextpdf.text.pdf.PdfWriter;
 	    private TabletInfoService tabletInfoService;
 
 	    @PostMapping("/saveTablets")
-	    public ResponseEntity<byte[]> saveTablets(
+	    public ResponseEntity<?> saveTablets(
 	            @RequestParam String doctorRegNum,
-	            @RequestParam String patientRegNum,
+	            @RequestParam String patientEmail,
 	            @RequestParam String doctorNotes,
 	            @RequestBody List<Map<String, Object>> tablets) {
 	        try {
-	            byte[] savedTablets = tabletInfoService.saveTablets(doctorRegNum, patientRegNum,doctorNotes, tablets);
-	            return ResponseEntity.status(HttpStatus.CREATED).body(savedTablets);
+	            tabletInfoService.saveTablets(doctorRegNum, patientEmail,doctorNotes, tablets);
+	            return ResponseEntity.status(HttpStatus.CREATED).body("saved");
 	        } catch (Exception e) {
 	            return ResponseEntity.status(500).build();
 	        }

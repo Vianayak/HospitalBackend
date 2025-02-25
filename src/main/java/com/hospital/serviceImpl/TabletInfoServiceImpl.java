@@ -1,5 +1,8 @@
 package com.hospital.serviceImpl;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +11,22 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.EPrescriptionDto;
 import com.hospital.dto.MeetingResponse;
 import com.hospital.dto.PatientDetailsDto;
 import com.hospital.dto.UsersDto;
 import com.hospital.model.DoctorNotesModel;
+import com.hospital.model.DoctorsInfo;
+import com.hospital.model.SlotAndTimeModel;
 import com.hospital.model.TabletInfo;
+import com.hospital.repo.BookAppointmentRepo;
+import com.hospital.repo.DoctorInfoRepo;
 import com.hospital.repo.DoctorNotesRepo;
+import com.hospital.repo.SlotAndTimeRepo;
 import com.hospital.repo.TabletInfoRepo;
 import com.hospital.service.TabletInfoService;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import kong.unirest.HttpResponse;
 import kong.unirest.HttpStatus;
@@ -35,54 +45,85 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	
 	@Autowired
 	private PdfService pdfService;
+	
+	@Autowired
+	private DoctorInfoRepo doctorInfoRepo;
+	
+	@Autowired
+	private BookAppointmentRepo bookRepo;
+	
+	@Autowired
+	private EmailServiceImpl emailService;
+	
+	@Autowired
+	private SlotAndTimeRepo slotAndTimeRepo;
 
 	@Override
 	@Transactional
-	public byte[] saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info) {
-		
-		DoctorNotesModel notes=new DoctorNotesModel();
-		notes.setNotes(doctorNotes);
-		
-		DoctorNotesModel note=notesRepo.save(notes);
-		
-		
-		List<TabletInfo> tabletList = new ArrayList<>();
+	public String saveTablets(String docRegNum, String patientEmail, String doctorNotes, List<Map<String, Object>> info) throws MessagingException {
 
-        for (Map<String, Object> tablet : info) {
-            TabletInfo tabletInfo = new TabletInfo();
-            tabletInfo.setPatientRegNum(patRegNum);
-            tabletInfo.setDoctorRegNum(docRegNum);
-            tabletInfo.setTabName((String) tablet.get("name"));
-            tabletInfo.setDays(Integer.parseInt((String) tablet.get("days")));
-            tabletInfo.setNotesId(note.getId());
+	    // Save doctor's notes
+	    DoctorNotesModel notes = new DoctorNotesModel();
+	    notes.setNotes(doctorNotes);
+	    DoctorNotesModel savedNote = notesRepo.save(notes);
 
-            // Extract slots and timing
-            @SuppressWarnings("unchecked")
-			Map<String, Boolean> slots = (Map<String, Boolean>) tablet.get("slots");
-            @SuppressWarnings("unchecked")
-			Map<String, String> timing = (Map<String, String>) tablet.get("timing");
+	    // Fetch patient details
+	    UsersDto patientDetails = fetchUserDetails(patientEmail);
 
-            if (slots.get("morning")) {
-                tabletInfo.setSlot("morning");
-                tabletInfo.setSlotTiming(timing.get("morning"));
-            } else if (slots.get("afternoon")) {
-                tabletInfo.setSlot("afternoon");
-                tabletInfo.setSlotTiming(timing.get("afternoon"));
-            } else if (slots.get("evening")) {
-                tabletInfo.setSlot("evening");
-                tabletInfo.setSlotTiming(timing.get("evening"));
-            }
+	    List<TabletInfo> tabletList = new ArrayList<>();
+	    List<SlotAndTimeModel> slotAndTimeList = new ArrayList<>();
 
-            tabletList.add(tabletInfo);
-        }
-        
-        List<TabletInfo> lst=repo.saveAll(tabletList);
-        
-        return pdfService.generatePdf(docRegNum, patRegNum, doctorNotes, tabletList);
+	    // Save tablet information
+	    for (Map<String, Object> tablet : info) {
+	        TabletInfo tabletInfo = new TabletInfo();
+	        tabletInfo.setPatientRegNum(patientDetails.getRegistrationNumber());
+	        tabletInfo.setDoctorRegNum(docRegNum);
+	        tabletInfo.setTabName((String) tablet.get("name"));
+	        tabletInfo.setDays(Integer.parseInt((String) tablet.get("days")));
+	        tabletInfo.setNotesId(savedNote.getId());
 
-		
+	        TabletInfo savedTablet = repo.save(tabletInfo); // Save tablet info and retrieve saved entity
+
+	        // Extract slots and timing
+	        @SuppressWarnings("unchecked")
+	        Map<String, Boolean> slots = (Map<String, Boolean>) tablet.get("slots");
+	        @SuppressWarnings("unchecked")
+	        Map<String, String> timing = (Map<String, String>) tablet.get("timing");
+
+	        // Save slot and timing for each tablet
+	        for (String slot : slots.keySet()) {
+	            if (Boolean.TRUE.equals(slots.get(slot))) {
+	                SlotAndTimeModel slotAndTime = new SlotAndTimeModel();
+	                slotAndTime.setTabletId(savedTablet.getId());
+	                slotAndTime.setSlot(slot);
+	                slotAndTime.setTiming(timing.get(slot));
+	                slotAndTimeList.add(slotAndTime);
+	            }
+	        }
+	    }
+
+	    slotAndTimeRepo.saveAll(slotAndTimeList); // Save all slots and timings
+
+	    // Prepare age and gender details
+	    String dob = bookRepo.findDobByEmail(patientEmail);
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    LocalDate dobDate = LocalDate.parse(dob, formatter);
+	    int age = Period.between(dobDate, LocalDate.now()).getYears();
+	    String gender = bookRepo.findGenderByEmail(patientEmail);
+	    char sex = gender.equalsIgnoreCase("Male") ? 'M' : gender.equalsIgnoreCase("Female") ? 'F' : 'O';
+
+	    // Generate PDF
+	    DoctorsInfo docInfo = doctorInfoRepo.findByRegestrationNum(docRegNum);
+	    List<TabletInfo> savedTablets = repo.findByNotesId(savedNote.getId());
+	    byte[] pdf = pdfService.generatePdf(docInfo, patientDetails, age, sex, doctorNotes, savedTablets);
+
+	    // Send Email
+	    EPrescriptionDto dto = repo.fetchEPrescriptionDetails(patientEmail, docRegNum);
+	    emailService.sendEPrescriptionEmailToPtient(dto, pdf);
+
+	    return "Saved Successfully";
 	}
-	
+
 	
 
 	@Override

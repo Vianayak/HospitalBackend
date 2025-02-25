@@ -15,8 +15,6 @@ public class TabletInfo {
 	private String doctorRegNum;
 	private String tabName;
 	private int days;
-	private String slot;
-	private String slotTiming;
 	private int notesId;
 	public int getNotesId() {
 		return notesId;
@@ -53,18 +51,6 @@ public class TabletInfo {
 	}
 	public void setDays(int days) {
 		this.days = days;
-	}
-	public String getSlot() {
-		return slot;
-	}
-	public void setSlot(String slot) {
-		this.slot = slot;
-	}
-	public String getSlotTiming() {
-		return slotTiming;
-	}
-	public void setSlotTiming(String slotTiming) {
-		this.slotTiming = slotTiming;
 	}
 
 }

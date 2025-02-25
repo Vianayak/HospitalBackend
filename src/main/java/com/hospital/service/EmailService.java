@@ -1,5 +1,6 @@
 package com.hospital.service;
 
+import com.hospital.dto.EPrescriptionDto;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
@@ -18,4 +19,6 @@ public interface EmailService {
 
 	void sendMeetingToDoctor(MeetingDetails meet, BookAppointment app, DoctorsInfo doctor, DateAndTimeInfo info,
 			String doctorURL) throws MessagingException;
+
+	void sendEPrescriptionEmailToPtient(EPrescriptionDto dto, byte[] pdfAttachment) throws MessagingException;
 }

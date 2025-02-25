@@ -6,9 +6,11 @@ import java.util.Map;
 import com.hospital.dto.MeetingResponse;
 import com.hospital.model.TabletInfo;
 
+import jakarta.mail.MessagingException;
+
 public interface TabletInfoService {
 
-	public byte[] saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info);
+	public String saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info) throws MessagingException;
 
 	List<MeetingResponse> getDoctorMeetings(String date, String doctorEmail);
 }

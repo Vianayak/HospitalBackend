@@ -1,10 +1,12 @@
 package com.hospital.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.EPrescriptionDto;
 import com.hospital.model.BookAppointment;
 import com.hospital.model.DateAndTimeInfo;
 import com.hospital.model.DoctorsInfo;
@@ -26,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
 		helper.setTo(email);
-		helper.setSubject("Your OTP Code - Jaya Hospitals");
+		helper.setSubject("Your OTP Code - TechSpryn");
 
 		// Get the email content with dynamic values
 		String content = getOtpEmailTemplate(otp);
@@ -42,11 +44,11 @@ public class EmailServiceImpl implements EmailService {
 	            + "This OTP is valid for 5 minutes.<br/><br/>"
 	            + "If you did not request this OTP, please disregard this email.<br/><br/>"
 	            + "Best regards,<br/>"
-	            + "The Jaya Hospitals Team<br/><br/>"
-	            + "Jaya Hospitals<br/>"
+	            + "The TechSpryn Team<br/><br/>"
+	            + "TechSpryn<br/>"
 	            + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
 	            + "Phone: (123) 456-7890<br/>"
-	            + "Website: <a href='http://www.jayahospitals.com'>www.jayahospitals.com</a>";
+	            + "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a>";
 	}
 
 	public String getEmailTemplate(String firstName, String lastName, String date, String time, String doctorName,
@@ -54,15 +56,15 @@ public class EmailServiceImpl implements EmailService {
 		return "Hello " + firstName + " " + lastName + ",<br/><br/>"
 				+ "Thank you for booking an appointment with us! Here are the details of your upcoming visit:<br/><br/>"
 				+ "<b>Appointment Details</b><br/>" + "Date: " + date + "<br/>" + "Time: " + time + "<br/>" + "Doctor: "
-				+ doctorName + "<br/>" + "Specialty: " + specialty + "<br/>" + "Clinic Name: Jaya Hospitals<br/>"
+				+ doctorName + "<br/>" + "Specialty: " + specialty + "<br/>" + "Clinic Name: TechSpryn<br/>"
 				+ "Location: 123 Health Avenue, Suite 456, New York, NY 10001<br/><br/>" + "<b>Payment Details</b><br/>"
 				+ "Payment Status: Paid<br/>" + "Amount Paid: " + amount + "<br/>"
 				+ "Please arrive 10 minutes early for your appointment. Bring any previous medical records if applicable.<br/><br/>"
 				+ "<b>Contact Information</b><br/>"
 				+ "For any queries, contact us at (123) 456-7890 or support@heartcareclinic.com.<br/><br/>"
-				+ "Looking forward to serving you,<br/>" + "Jaya Hospitals Team<br/><br/>" + "Jaya Hospitals<br/>"
+				+ "Looking forward to serving you,<br/>" + "TechSpryn Team<br/><br/>" + "TechSpryn<br/>"
 				+ "123 Health Avenue, Suite 456, New York, NY 10001<br/>" + "Phone: (123) 456-7890<br/>"
-				+ "Website: <a href='http://www.jayahospitals.com'>www.jayahospitals.com</a>";
+				+ "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a>";
 	}
 
 	@Override
@@ -88,15 +90,15 @@ public class EmailServiceImpl implements EmailService {
 				+ "You have an upcoming appointment with the following details:<br/><br/>"
 				+ "<b>Appointment Details</b><br/>" + "Patient: " + app.getFirstName() + " " + app.getLastName()
 				+ "<br/>" + "Date: " + info.getDate() + "<br/>" + "Time: " + info.getTime() + "<br/>" + "Specialty: "
-				+ doctor.getSpecialization() + "<br/>" + "Clinic Name: Jaya Hospitals<br/>"
+				+ doctor.getSpecialization() + "<br/>" + "Clinic Name: TechSpryn<br/>"
 				+ "Location: 123 Health Avenue, Suite 456, New York, NY 10001<br/><br/>" + "<b>Meeting Details</b><br/>"
 				+ "Meeting Link: <a href='" + doctorURL + "'>" + doctorURL + "</a><br/>"
 				+ "Please ensure you join the meeting on time.<br/><br/>"
 				+ "For any assistance, please contact our support team.<br/><br/>"
-				+ "Thank you for being a part of Jaya Hospitals.<br/><br/>" + "Jaya Hospitals Team<br/><br/>"
-				+ "Jaya Hospitals<br/>" + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
+				+ "Thank you for being a part of TechSpryn.<br/><br/>" + "TechSpryn Team<br/><br/>"
+				+ "TechSpryn<br/>" + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
 				+ "Phone: (123) 456-7890<br/>"
-				+ "Website: <a href='http://www.jayahospitals.com'>www.jayahospitals.com</a>";
+				+ "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a>";
 	}
 
 	public String getPatientEmailTemplate(MeetingDetails meet, BookAppointment app, DoctorsInfo doctor,
@@ -104,7 +106,7 @@ public class EmailServiceImpl implements EmailService {
 		return "Hello " + app.getFirstName() + " " + app.getLastName() + ",<br/><br/>"
 				+ "Thank you for booking an appointment with us! Here are the details of your upcoming visit:<br/><br/>"
 				+ "<b>Appointment Details</b><br/>" + "Date: " + info.getDate() + "<br/>" + "Time: " + info.getTime() + "<br/>" + "Doctor: "
-				+ doctor.getName() + "<br/>" + "Specialty: " + doctor.getSpecialization() + "<br/>" + "Clinic Name: Jaya Hospitals<br/>"
+				+ doctor.getName() + "<br/>" + "Specialty: " + doctor.getSpecialization() + "<br/>" + "Clinic Name: TechSpryn<br/>"
 				+ "Location: 123 Health Avenue, Suite 456, New York, NY 10001<br/><br/>" + "<b>Payment Details</b><br/>"
 				+ "Payment Status: Paid<br/>" + "Amount Paid: " + app.getAmount() + "<br/>"
 				+ "Meeting Id: "+meet.getMeetingRoom()+"<br/><br/>" + "<b>Meeting Details</b><br/>" + "Meeting Link: <a href='"
@@ -112,10 +114,10 @@ public class EmailServiceImpl implements EmailService {
 				+ "Please join the meeting at your scheduled time.<br/><br/>"
 				+ "Please arrive 10 minutes early for your appointment. Bring any previous medical records if applicable.<br/><br/>"
 				+ "<b>Contact Information</b><br/>"
-				+ "For any queries, contact us at (123) 456-7890 or support@jayahospitals.com.<br/><br/>"
-				+ "Looking forward to serving you,<br/>" + "Jaya Hospitals Team<br/><br/>" + "Jaya Hospitals<br/>"
+				+ "For any queries, contact us at (123) 456-7890 or support@TechSpryn.com.<br/><br/>"
+				+ "Looking forward to serving you,<br/>" + "TechSpryn Team<br/><br/>" + "TechSpryn<br/>"
 				+ "123 Health Avenue, Suite 456, New York, NY 10001<br/>" + "Phone: (123) 456-7890<br/>"
-				+ "Website: <a href='http://www.jayahospitals.com'>www.jayahospitals.com</a>";
+				+ "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a>";
 	}
 	
 	@Override
@@ -134,6 +136,7 @@ public class EmailServiceImpl implements EmailService {
 		mailSender.send(message);
 
 	}
+	
 	@Override
 	public void sendMeetingToPatient(MeetingDetails meet, BookAppointment app, DoctorsInfo doctor,
 			DateAndTimeInfo info, String patientURL) throws MessagingException {
@@ -151,4 +154,46 @@ public class EmailServiceImpl implements EmailService {
 
 	}
 
+	public String generateEPrescriptionEmail(String firstName, String lastName, String appointmentDate, String doctorName, String specialization) {
+	    return "Hello " + firstName + " " + lastName + ",<br/><br/>"
+	        + "We hope this message finds you well. Following your recent consultation, we are providing you with your e-prescription. Please find the attached document for your medication details and doctor's notes.<br/><br/>"
+	        + "<b>🩺 Prescription Details</b><br/>"
+	        + "- <b>Date of Consultation:</b> " + appointmentDate + "<br/>"
+	        + "- <b>Doctor:</b> Dr. " + doctorName + "<br/>"
+	        + "- <b>Specialization:</b> " + specialization + "<br/><br/>"
+	        + "<b>💊 Medications Prescribed:</b><br/>"
+	        + "Please follow the medication schedule as outlined in the attached PDF. Make sure to adhere to the dosage instructions carefully.<br/><br/>"
+	        + "<b>📍 Clinic Information:</b><br/>"
+	        + "TechSpryn<br/>"
+	        + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
+	        + "Phone: (123) 456-7890<br/>"
+	        + "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a><br/><br/>"
+	        + "<b>🔔 Important Reminders:</b><br/>"
+	        + "- Please complete your medication course as prescribed.<br/>"
+	        + "- Contact us immediately if you experience any side effects.<br/>"
+	        + "- Follow-up consultations can be scheduled via our online portal.<br/><br/>"
+	        + "If you have any questions or need assistance, feel free to contact us at (123) 456-7890 or email us at support@techspryn.com.<br/><br/>"
+	        + "Wishing you a speedy recovery,<br/>"
+	        + "<b>The TechSpryn Team</b><br/><br/>";
+	}
+	
+	
+	@Override
+	public void sendEPrescriptionEmailToPtient(EPrescriptionDto dto, byte[] pdfAttachment) throws MessagingException {
+	    MimeMessage message = mailSender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+	    helper.setTo(dto.getPatientEmail());
+	    helper.setSubject("Your E-Prescription from TechSpryn");
+	    helper.setText(generateEPrescriptionEmail(dto.getFirstName(), dto.getLastName(), dto.getAppointmentDate(), dto.getDoctorName(), dto.getSpecialization()), true); // Enable HTML content
+
+	    // Attach PDF
+	    helper.addAttachment("E-Prescription.pdf", new ByteArrayResource(pdfAttachment));
+
+	    mailSender.send(message);
+	}
+	
+	
+	
 }
+

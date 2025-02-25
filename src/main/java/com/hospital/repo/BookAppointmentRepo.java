@@ -83,7 +83,11 @@ public interface BookAppointmentRepo extends JpaRepository<BookAppointment, Inte
     
     
 
-
+    @Query("SELECT p.dob FROM BookAppointment p WHERE p.email = :email")
+    String findDobByEmail(@Param("email") String email);
+    
+    @Query("SELECT p.gender FROM BookAppointment p WHERE p.email = :email")
+    String findGenderByEmail(@Param("email") String email);
 
 
 
