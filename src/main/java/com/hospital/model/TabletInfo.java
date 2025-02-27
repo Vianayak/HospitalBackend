@@ -16,6 +16,20 @@ public class TabletInfo {
 	private String tabName;
 	private int days;
 	private int notesId;
+	private String firstName;
+	private String lastName;
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	public int getNotesId() {
 		return notesId;
 	}

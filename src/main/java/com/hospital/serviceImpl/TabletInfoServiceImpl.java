@@ -1,6 +1,7 @@
 package com.hospital.serviceImpl;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,14 +15,17 @@ import org.springframework.stereotype.Service;
 import com.hospital.dto.EPrescriptionDto;
 import com.hospital.dto.MeetingResponse;
 import com.hospital.dto.PatientDetailsDto;
+import com.hospital.dto.PrescriptionDetailsDto;
 import com.hospital.dto.UsersDto;
 import com.hospital.model.DoctorNotesModel;
 import com.hospital.model.DoctorsInfo;
+import com.hospital.model.PdfRecord;
 import com.hospital.model.SlotAndTimeModel;
 import com.hospital.model.TabletInfo;
 import com.hospital.repo.BookAppointmentRepo;
 import com.hospital.repo.DoctorInfoRepo;
 import com.hospital.repo.DoctorNotesRepo;
+import com.hospital.repo.PdfRecordsRepo;
 import com.hospital.repo.SlotAndTimeRepo;
 import com.hospital.repo.TabletInfoRepo;
 import com.hospital.service.TabletInfoService;
@@ -57,6 +61,9 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	
 	@Autowired
 	private SlotAndTimeRepo slotAndTimeRepo;
+	
+	@Autowired
+	private PdfRecordsRepo pdfRecordRepository;
 
 	@Override
 	@Transactional
@@ -81,6 +88,8 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	        tabletInfo.setTabName((String) tablet.get("name"));
 	        tabletInfo.setDays(Integer.parseInt((String) tablet.get("days")));
 	        tabletInfo.setNotesId(savedNote.getId());
+	        tabletInfo.setFirstName(patientDetails.getFirstName());
+	        tabletInfo.setLastName(patientDetails.getLastName());
 
 	        TabletInfo savedTablet = repo.save(tabletInfo); // Save tablet info and retrieve saved entity
 
@@ -116,6 +125,14 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	    DoctorsInfo docInfo = doctorInfoRepo.findByRegestrationNum(docRegNum);
 	    List<TabletInfo> savedTablets = repo.findByNotesId(savedNote.getId());
 	    byte[] pdf = pdfService.generatePdf(docInfo, patientDetails, age, sex, doctorNotes, savedTablets);
+	    
+	    
+	    PdfRecord pdfRecord = new PdfRecord();
+	    pdfRecord.setNotesId(savedNote.getId());
+	    pdfRecord.setPdfData(pdf);
+	    pdfRecord.setGeneratedDate(LocalDate.now());
+	    pdfRecord.setGeneratedTime(LocalTime.now());
+	    pdfRecordRepository.save(pdfRecord);
 
 	    // Send Email
 	    EPrescriptionDto dto = repo.fetchEPrescriptionDetails(patientEmail, docRegNum);
@@ -148,6 +165,15 @@ public class TabletInfoServiceImpl implements TabletInfoService{
             return null; 
         }
         return response.getBody();
+    }
+    
+    
+    @Override
+    public List<PrescriptionDetailsDto> getDoctorPrescriptions(String docRegNum){
+    	
+    	List<PrescriptionDetailsDto> lst=pdfRecordRepository.findByDocRegNum(docRegNum);
+		return lst;
+    	
     }
 
     

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -45,12 +46,15 @@ public class PdfService {
     	
     	// Get today's date
         LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
 
         // Define the formatter for the desired pattern
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
         // Format the date
         String formattedDate = today.format(formatter);
+        String formattedTime = now.format(timeFormatter);
 
         try {
             Document document = new Document(PageSize.A4, 50, 50, 150, 80); // Increased top margin for header
@@ -117,6 +121,7 @@ public class PdfService {
                         canvas.setFontAndSize(baseFont, 12);
                         canvas.showTextAligned(Element.ALIGN_LEFT, "techspryn@gmail.com", document.left(), document.bottom() - 30, 0);
                         canvas.showTextAligned(Element.ALIGN_RIGHT, "Date: "+formattedDate, document.right(), document.bottom() - 30, 0);
+                        canvas.showTextAligned(Element.ALIGN_RIGHT, "Time: "+formattedTime, document.right(), document.bottom() - 45, 0);
                         canvas.endText();
                     } catch (Exception e) {
                         e.printStackTrace();
