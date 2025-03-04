@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,32 @@ public class DoctorsInfoServiceImpl implements DoctorsInfoService {
 	public DoctorsInfo getDoctorByEmail(String email) {
 		// TODO Auto-generated method stub
 		return doctorInfoRepo.findByEmail(email);
+	}
+	
+	@Override
+	public List<DoctorsInfo> getAllDoctorsBySpecialization(List<String> specializations) {
+	    if (specializations == null || specializations.isEmpty()) {
+	        return doctorInfoRepo.findBySpecializationIn(List.of("general physician")); // Lowercase
+	    }
+
+	    // Normalize specializations (convert to lowercase)
+	    List<String> normalizedSpecs = specializations.stream()
+	            .map(String::trim)
+	            .map(String::toLowerCase)  // Convert input to lowercase
+	            .collect(Collectors.toList());
+
+	    // Fetch doctors by specialization
+	    List<DoctorsInfo> doctors = doctorInfoRepo.findBySpecializationIn(normalizedSpecs);
+
+	    // If no doctors found, return General Physician doctors
+	    if (doctors.isEmpty()) {
+	        return doctorInfoRepo.findBySpecializationIn(List.of("general physician"));
+	    }
+
+	    // Convert fetched doctors' specializations to lowercase before returning
+	    doctors.forEach(doctor -> doctor.setSpecialization(doctor.getSpecialization().toLowerCase()));
+
+	    return doctors;
 	}
 
 
