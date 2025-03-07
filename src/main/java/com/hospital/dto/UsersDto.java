@@ -6,17 +6,43 @@ public class UsersDto {
     private String lastName;
     private String registrationNumber;
     private String mobileNumber;
+    private String dob;
+    private String gender;
 
-    // Constructors
+    public String getDob() {
+		return dob;
+	}
+
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
+
+	// Constructors
     public UsersDto() {}
 
-    public UsersDto(String email, String firstName, String lastName, String registrationNumber, String mobileNumber) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.registrationNumber = registrationNumber;
-        this.mobileNumber = mobileNumber;
-    }
+   
+
+	
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public UsersDto(String email, String firstName, String lastName, String registrationNumber, String mobileNumber,
+			String dob, String gender) {
+		super();
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.registrationNumber = registrationNumber;
+		this.mobileNumber = mobileNumber;
+		this.dob = dob;
+		this.gender = gender;
+	}
 
 	public String getEmail() {
 		return email;

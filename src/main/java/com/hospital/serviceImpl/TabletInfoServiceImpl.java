@@ -114,11 +114,11 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	    slotAndTimeRepo.saveAll(slotAndTimeList); // Save all slots and timings
 
 	    // Prepare age and gender details
-	    String dob = bookRepo.findDobByEmail(patientEmail);
+	    String dob = patientDetails.getDob();
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	    LocalDate dobDate = LocalDate.parse(dob, formatter);
 	    int age = Period.between(dobDate, LocalDate.now()).getYears();
-	    String gender = bookRepo.findGenderByEmail(patientEmail);
+	    String gender = patientDetails.getGender();
 	    char sex = gender.equalsIgnoreCase("Male") ? 'M' : gender.equalsIgnoreCase("Female") ? 'F' : 'O';
 
 	    // Generate PDF

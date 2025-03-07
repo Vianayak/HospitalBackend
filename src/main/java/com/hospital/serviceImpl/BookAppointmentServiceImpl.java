@@ -166,6 +166,8 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 				userDto.setLastName(appointment.getLastName());
 				userDto.setMobileNumber(Long.toString(appointment.getMobile()));
 				userDto.setRole("patient");
+				userDto.setDob(appointment.getDob());
+				userDto.setGender(appointment.getGender());
 				try {
 			        ObjectMapper objectMapper = new ObjectMapper();
 			        String userData = objectMapper.writeValueAsString(userDto);

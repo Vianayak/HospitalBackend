@@ -19,7 +19,26 @@ public class UserDto {
 	private String registrationNumber;
 
 	private String newPassword;
+	
+	private String dob;
 
+	private String gender;
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getDob() {
+		return dob;
+	}
+
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
 
 	public String getNewPassword() {
 		return newPassword;

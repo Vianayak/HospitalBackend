@@ -40,9 +40,13 @@ public class ChatBotController {
                 .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
                 .build();
         
-        String modifiedPrompt=userInput+".I want just which specialization doctor can treat names nothing else just one word names";
+        String cleanedUserInput = userInput.trim().replace("\"", ""); // Remove extra quotes if any
 
-        String jsonRequest = "{ \"contents\": [{ \"role\": \"user\", \"parts\": [{ \"text\": \"" + modifiedPrompt + "\" }] }] }";
+        String modifiedPrompt = cleanedUserInput + ". I want just which specialization doctor can treat names nothing else just one word names";
+
+        String jsonRequest = "{ \"contents\": [{ \"role\": \"user\", \"parts\": [{ \"text\": \"" 
+                             + modifiedPrompt 
+                             + "\" }] }] }";
 
         System.out.println("Sending request to: " + API_URL);
         System.out.println("Request JSON: " + jsonRequest);
