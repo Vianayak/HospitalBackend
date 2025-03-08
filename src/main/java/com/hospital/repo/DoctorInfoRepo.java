@@ -16,5 +16,10 @@ public interface DoctorInfoRepo extends JpaRepository<DoctorsInfo, Integer> {
 	
 	@Query("SELECT d FROM DoctorsInfo d WHERE LOWER(d.specialization) IN :specializations")
 	List<DoctorsInfo> findBySpecializationIn(@Param("specializations") List<String> specializations);
+	
+	
+	@Query("SELECT DISTINCT LOWER(d.specialization) FROM DoctorsInfo d")
+	List<String> getAllSpecializationNames();
+
 
 }

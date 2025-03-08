@@ -42,7 +42,9 @@ public class ChatBotController {
         
         String cleanedUserInput = userInput.trim().replace("\"", ""); // Remove extra quotes if any
 
-        String modifiedPrompt = cleanedUserInput + ". I want just which specialization doctor can treat names nothing else just one word names";
+        String modifiedPrompt = cleanedUserInput + 
+        	    ". Respond only with doctor specialization names in American English, nothing else.";
+
 
         String jsonRequest = "{ \"contents\": [{ \"role\": \"user\", \"parts\": [{ \"text\": \"" 
                              + modifiedPrompt 
@@ -89,7 +91,7 @@ public class ChatBotController {
 
     
 
-	private List<String> extractSpecializations(String responseBody) throws IOException {
+    private List<String> extractSpecializations(String responseBody) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(responseBody);
 
@@ -100,16 +102,17 @@ public class ChatBotController {
             JsonNode parts = content.path("parts");
             if (parts.isArray() && parts.size() > 0) {
                 String text = parts.get(0).path("text").asText();
-                
-                // Split text by newlines and return as list
-                return Arrays.stream(text.split("\n"))
+
+                // Split by comma OR newline, trim spaces, and remove empty values
+                return Arrays.stream(text.split("[,\n]"))  // Regex to split by ',' or '\n'
                         .map(String::trim)
-                        .filter(s -> !s.isEmpty()) // Remove empty lines
+                        .filter(s -> !s.isEmpty()) // Remove empty values
                         .collect(Collectors.toList());
             }
         }
         return List.of();
     }
+
 	
 	
 	
