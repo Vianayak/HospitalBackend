@@ -25,7 +25,7 @@ public interface TabletInfoRepo extends JpaRepository<TabletInfo, Integer>{
 
 
 	
-	@Query("SELECT new com.hospital.dto.EPrescriptionDto(" +
+	@Query("SELECT DISTINCT new com.hospital.dto.EPrescriptionDto(" +
 		       "b.firstName, b.lastName, d.date, di.name, di.specialization, di.email, b.email) " +
 		       "FROM BookAppointment b, DateAndTimeInfo d, DoctorsInfo di " +
 		       "WHERE d.appointmentId = b.id " +
