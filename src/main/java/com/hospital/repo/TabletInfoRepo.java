@@ -31,8 +31,8 @@ public interface TabletInfoRepo extends JpaRepository<TabletInfo, Integer>{
 		       "WHERE d.appointmentId = b.id " +
 		       "AND di.regestrationNum = d.regestrationNum " +
 		       "AND b.email = :email " +
-		       "AND di.regestrationNum = :registrationNum")
-		EPrescriptionDto fetchEPrescriptionDetails(@Param("email") String email, @Param("registrationNum") String registrationNum);
+		       "AND di.regestrationNum = :registrationNum AND d.date= :date")
+		EPrescriptionDto fetchEPrescriptionDetails(@Param("email") String email, @Param("registrationNum") String registrationNum, @Param("date") String date);
 	
 	
 	List<TabletInfo> findByNotesId(int notesId);

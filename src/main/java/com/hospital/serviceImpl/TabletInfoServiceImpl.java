@@ -133,9 +133,12 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	    pdfRecord.setGeneratedDate(LocalDate.now());
 	    pdfRecord.setGeneratedTime(LocalTime.now());
 	    pdfRecordRepository.save(pdfRecord);
+	    
+	    LocalDate today = LocalDate.now();
+        String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 	    // Send Email
-	    EPrescriptionDto dto = repo.fetchEPrescriptionDetails(patientEmail, docRegNum);
+	    EPrescriptionDto dto = repo.fetchEPrescriptionDetails(patientEmail, docRegNum,formattedDate);
 	    emailService.sendEPrescriptionEmailToPtient(dto, pdf);
 
 	    return "Saved Successfully";
