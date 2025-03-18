@@ -67,11 +67,12 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 
 	@Override
 	@Transactional
-	public String saveTablets(String docRegNum, String patientEmail, String doctorNotes, List<Map<String, Object>> info) throws MessagingException {
+	public String saveTablets(String docRegNum, String patientEmail, String doctorNotes, String doctorFeedback, List<Map<String, Object>> info) throws MessagingException {
 
 	    // Save doctor's notes
 	    DoctorNotesModel notes = new DoctorNotesModel();
 	    notes.setNotes(doctorNotes);
+	    notes.setDoctorFeedback(doctorFeedback);
 	    DoctorNotesModel savedNote = notesRepo.save(notes);
 
 	    // Fetch patient details

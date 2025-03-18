@@ -11,7 +11,7 @@ import jakarta.mail.MessagingException;
 
 public interface TabletInfoService {
 
-	public String saveTablets(String docRegNum,String patRegNum,String doctorNotes,List<Map<String, Object>> info) throws MessagingException;
+	public String saveTablets(String docRegNum,String patRegNum,String doctorNotes,String doctorFeedback,List<Map<String, Object>> info) throws MessagingException;
 
 	List<MeetingResponse> getDoctorMeetings(String date, String doctorEmail);
 

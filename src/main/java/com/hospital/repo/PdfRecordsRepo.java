@@ -15,18 +15,21 @@ import com.hospital.model.PdfRecord;
 @Repository
 public interface PdfRecordsRepo extends JpaRepository<PdfRecord, Integer>{
 	
-	@Query("SELECT DISTINCT new com.hospital.dto.PrescriptionDetailsDto("
-			+ "t.patientRegNum,"
-			+ "p.generatedDate,"
-			+ "p.generatedTime,"
-			+ "p.pdfData,"
-			+ "t.firstName,"
-			+ "t.lastName"
-			+ ") "
-			+ "FROM TabletInfo t, PdfRecord p "
-			+ "WHERE p.notesId = t.notesId "
-			+ "AND t.doctorRegNum = :docRegNum")
+	@Query("SELECT DISTINCT new com.hospital.dto.PrescriptionDetailsDto(" +
+		       "t.patientRegNum, " +
+		       "p.generatedDate, " +
+		       "p.generatedTime, " +
+		       "p.pdfData, " +
+		       "t.firstName, " +
+		       "t.lastName, " +  // ✅ Added missing comma
+		       "dn.doctorFeedback" +  // ✅ Now correctly formatted
+		       ") " +
+		       "FROM TabletInfo t, PdfRecord p, DoctorNotesModel dn " +  // ✅ Added space before WHERE
+		       "WHERE p.notesId = t.notesId " +
+		       "AND dn.id = t.notesId " +  // ✅ Added spacing for readability
+		       "AND t.doctorRegNum = :docRegNum")
 		List<PrescriptionDetailsDto> findByDocRegNum(@Param("docRegNum") String docRegNum);
+
 
 	
 }

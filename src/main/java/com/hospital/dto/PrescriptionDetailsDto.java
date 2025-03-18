@@ -10,16 +10,28 @@ public class PrescriptionDetailsDto {
     private byte[] pdfData;
     private String firstName;
     private String lastName;
+    private String doctorfeedback;
 
-    // Constructor matching the selected fields
-    public PrescriptionDetailsDto(String patientRegNum, LocalDate generatedDate, LocalTime generatedTime, byte[] pdfData, String firstName, String lastName) {
-        this.patientRegNum = patientRegNum;
-        this.generatedDate = generatedDate;
-        this.generatedTime = generatedTime;
-        this.pdfData = pdfData;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
+    public String getDoctorfeedback() {
+		return doctorfeedback;
+	}
+
+	public void setDoctorfeedback(String doctorfeedback) {
+		this.doctorfeedback = doctorfeedback;
+	}
+
+	
+	public PrescriptionDetailsDto(String patientRegNum, LocalDate generatedDate, LocalTime generatedTime,
+			byte[] pdfData, String firstName, String lastName, String doctorfeedback) {
+		super();
+		this.patientRegNum = patientRegNum;
+		this.generatedDate = generatedDate;
+		this.generatedTime = generatedTime;
+		this.pdfData = pdfData;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.doctorfeedback = doctorfeedback;
+	}
 
 	public String getPatientRegNum() {
 		return patientRegNum;

@@ -17,6 +17,16 @@ public class DoctorNotesModel {
 	@Lob
     @Column(columnDefinition = "MEDIUMTEXT") 
     private String notes;
+	
+	private String doctorFeedback;
+
+	public String getDoctorFeedback() {
+		return doctorFeedback;
+	}
+
+	public void setDoctorFeedback(String doctorFeedback) {
+		this.doctorFeedback = doctorFeedback;
+	}
 
 	public int getId() {
 		return id;

@@ -37,9 +37,10 @@ import com.hospital.serviceImpl.PdfService;
 	            @RequestParam String doctorRegNum,
 	            @RequestParam String patientEmail,
 	            @RequestParam String doctorNotes,
+	            @RequestParam String doctorFeedback,
 	            @RequestBody List<Map<String, Object>> tablets) {
 	        try {
-	            tabletInfoService.saveTablets(doctorRegNum, patientEmail,doctorNotes, tablets);
+	            tabletInfoService.saveTablets(doctorRegNum, patientEmail,doctorNotes,doctorFeedback, tablets);
 	            return ResponseEntity.status(HttpStatus.CREATED).body("saved");
 	        } catch (Exception e) {
 	            return ResponseEntity.status(500).build();
