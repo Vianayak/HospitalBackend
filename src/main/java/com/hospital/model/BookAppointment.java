@@ -36,7 +36,15 @@ public class BookAppointment {
 	
 	private String issue; 
 	
+	private boolean homeService;
 	
+	
+	public boolean isHomeService() {
+		return homeService;
+	}
+	public void setHomeService(boolean homeService) {
+		this.homeService = homeService;
+	}
 	public String getIssue() {
 		return issue;
 	}

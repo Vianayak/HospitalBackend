@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,10 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	    // Generate PDF
 	    DoctorsInfo docInfo = doctorInfoRepo.findByRegestrationNum(docRegNum);
 	    List<TabletInfo> savedTablets = repo.findByNotesId(savedNote.getId());
-	    byte[] pdf = pdfService.generatePdf(docInfo, patientDetails, age, sex, doctorNotes, savedTablets);
+	    
+	    String pdfNumb=generateTechSprynId();
+	    
+	    byte[] pdf = pdfService.generatePdf(docInfo, patientDetails, age, sex, doctorNotes, savedTablets, pdfNumb);
 	    
 	    
 	    PdfRecord pdfRecord = new PdfRecord();
@@ -133,6 +137,7 @@ public class TabletInfoServiceImpl implements TabletInfoService{
 	    pdfRecord.setPdfData(pdf);
 	    pdfRecord.setGeneratedDate(LocalDate.now());
 	    pdfRecord.setGeneratedTime(LocalTime.now());
+	    pdfRecord.setPdfNumb(pdfNumb);
 	    pdfRecordRepository.save(pdfRecord);
 	    
 	    LocalDate today = LocalDate.now();
@@ -178,6 +183,13 @@ public class TabletInfoServiceImpl implements TabletInfoService{
     	List<PrescriptionDetailsDto> lst=pdfRecordRepository.findByDocRegNum(docRegNum);
 		return lst;
     	
+    }
+    
+    
+    public String generateTechSprynId() {
+        Random random = new Random();
+        int randomNumber = 1000 + random.nextInt(9000); // Generates a random number between 1000 and 9999
+        return "TechSpryn-" + randomNumber;
     }
 
     

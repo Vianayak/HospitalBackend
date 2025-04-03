@@ -42,7 +42,7 @@ public class PdfService {
     private SlotAndTimeRepo slotRepo;
     
     
-    public byte[] generatePdf(DoctorsInfo doctor, UsersDto patientDetails, int age, char sex, String doctorNotes, List<TabletInfo> tablets) {
+    public byte[] generatePdf(DoctorsInfo doctor, UsersDto patientDetails, int age, char sex, String doctorNotes, List<TabletInfo> tablets,String pdfNumb) {
     	
     	// Get today's date
         LocalDate today = LocalDate.now();
@@ -120,6 +120,7 @@ public class PdfService {
                         canvas.beginText();
                         canvas.setFontAndSize(baseFont, 12);
                         canvas.showTextAligned(Element.ALIGN_LEFT, "techspryn@gmail.com", document.left(), document.bottom() - 30, 0);
+                        canvas.showTextAligned(Element.ALIGN_LEFT, pdfNumb, document.left(), document.bottom() - 45, 0);
                         canvas.showTextAligned(Element.ALIGN_RIGHT, "Date: "+formattedDate, document.right(), document.bottom() - 30, 0);
                         canvas.showTextAligned(Element.ALIGN_RIGHT, "Time: "+formattedTime, document.right(), document.bottom() - 45, 0);
                         canvas.endText();

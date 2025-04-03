@@ -71,4 +71,14 @@ public class PdfRecord {
     public void setPdfData(byte[] pdfData) {
         this.pdfData = pdfData;
     }
+    
+    private String pdfNumb;
+
+	public String getPdfNumb() {
+		return pdfNumb;
+	}
+
+	public void setPdfNumb(String pdfNumb) {
+		this.pdfNumb = pdfNumb;
+	}
 }

@@ -19,7 +19,16 @@ public class AppointmentDto {
 	private String slot;
 	private String issue;
 	private String time;
+	private boolean homeService;
 	
+	public boolean isHomeService() {
+		return homeService;
+	}
+
+	public void setHomeService(boolean homeService) {
+		this.homeService = homeService;
+	}
+
 	public AppointmentDto(String firstName, String lastName, String issue, String time) {
         this.firstName = firstName;
         this.lastName = lastName;
