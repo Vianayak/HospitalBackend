@@ -3,8 +3,10 @@ package com.hospital.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hospital.dto.NurseDto;
+import com.hospital.dto.UsersDto;
 import com.hospital.model.Nurse;
 
 
@@ -17,6 +19,9 @@ public interface NurseService {
 	void deleteNurse(int id);
 
 
-	List<Nurse> getAllNurses(String docRegNum);
+	List<UsersDto> getAllNurses(String docRegNum);
+
+
+	String sendToLoginService(String userData, String email);
 	
 }

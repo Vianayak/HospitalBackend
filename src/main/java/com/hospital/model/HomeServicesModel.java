@@ -23,6 +23,17 @@ public class HomeServicesModel {
 	@Column(name = "identity", columnDefinition = "LONGBLOB")
 	private byte[] identity;
 	private String docId;
+	
+	private String status;
+	 
+	private String nurseRegNum;
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public int getId() {
 		return id;
 	}
@@ -64,5 +75,11 @@ public class HomeServicesModel {
 	}
 	public void setDocId(String docId) {
 		this.docId = docId;
+	}
+	public String getNurseRegNum() {
+		return nurseRegNum;
+	}
+	public void setNurseRegNum(String nurseRegNum) {
+		this.nurseRegNum = nurseRegNum;
 	}
 }

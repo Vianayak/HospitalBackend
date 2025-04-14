@@ -1,5 +1,6 @@
 package com.hospital.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -24,6 +25,9 @@ public class NurseServiceImpl implements NurseService{
 	
 	@Autowired
 	private NurseRepository repo;
+	
+	@Autowired
+	private EmailServiceImpl mail;
 
 	@Override
 	public Nurse saveNurse(NurseDto dto) {
@@ -40,7 +44,13 @@ public class NurseServiceImpl implements NurseService{
 			nurseDetails.setDoctorRegNum(dto.getDoctorRegNum());
 			nurseDetails.setEmail(dto.getEmail());
 			nurseDetails.setName(dto.getName());
-			return repo.save(nurseDetails);
+            Nurse savedNurse = repo.save(nurseDetails);
+
+            // Send email with Google Form link
+            mail.sendGoogleFormEmail(savedNurse.getName(), savedNurse.getEmail());
+
+            return savedNurse;
+
 		}
 	}
 
@@ -69,8 +79,16 @@ public class NurseServiceImpl implements NurseService{
 	}
 	
 	@Override
-	public List<Nurse> getAllNurses(String docRegNum) {
-        return repo.findByDoctorRegNum(docRegNum);
+	public List<UsersDto> getAllNurses(String docRegNum) {
+        List<Nurse> nurses=repo.findByDoctorRegNum(docRegNum);
+        List<UsersDto> nurseUsers=new ArrayList<>();
+        for (Nurse nurse : nurses) {
+            if (nurse.getEmail() != null) {
+                UsersDto userDetails = fetchUserDetails(nurse.getEmail());
+                nurseUsers.add(userDetails);
+            }
+        }
+		return nurseUsers;
     }
 	
 	
@@ -82,5 +100,41 @@ public class NurseServiceImpl implements NurseService{
 	    repo.delete(nurse);
 	}
 
+	
+	@Override
+	public String sendToLoginService(String userData,String email) {
+		
+	    try {
+	    	
+	    	if (!checkNurseAvailability(email)) {
+	            return "Nurse not already exists in the database. Skipping user registration.";
+	        }
+	        // Prepare the request
+	        kong.unirest.HttpResponse<String> response = Unirest.post("http://localhost:8082/api/user/register")
+	                .field("user", userData)
+	                .connectTimeout(10000)  // 10 seconds
+	                .socketTimeout(10000)   // 10 seconds
+	                .asString(); 
+	        if (response.isSuccess()) {
+	            // Return the response body if successful
+	            return response.getBody();
+	        } else {
+	        	if (response.getStatus() == 500 && response.getBody().contains("Email already exists")) {
+	                // Handle the specific error and return a custom message
+	                return "Error: Email already exists.";
+	            }
+	            throw new RuntimeException("Error: " + response.getStatus() + " - " + response.getBody());
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error sending data to the Login Service: " + e.getMessage(), e);
+	    }
+	}
+	
+	
+	private boolean checkNurseAvailability(String email) {
+		return repo.existsByEmail(email);
+	}
+
+	
 
 }

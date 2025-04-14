@@ -1,5 +1,7 @@
 package com.hospital.controller;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,7 +25,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hospital.dto.NurseDto;
+import com.hospital.dto.NurseFormData;
+import com.hospital.dto.UserDto;
+import com.hospital.dto.UsersDto;
 import com.hospital.model.Nurse;
 import com.hospital.service.NurseService;
 
@@ -114,13 +120,51 @@ public class NurseController {
     
     @GetMapping("/all/{docRegNum}") // <-- Corrected Path Variable
     public ResponseEntity<?> getAllNurses(@PathVariable String docRegNum) {
-        List<Nurse> nurses = service.getAllNurses(docRegNum);
+        List<UsersDto> nurses = service.getAllNurses(docRegNum);
 
         if (nurses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No nurses found.");
         }
         return ResponseEntity.ok(nurses);
     }
+    
+    
+    @PostMapping("/form-data/save")
+    public ResponseEntity<String> receiveFormData(@RequestBody NurseFormData data) {
+        try {
+            // Convert NurseFormData to UserDto
+        	UserDto userDto = new UserDto();
+            userDto.setFirstName(data.getFirstName());
+            userDto.setLastName(data.getLastName());
+            userDto.setEmail(data.getEmail());
+            userDto.setMobileNumber(data.getMobileNo());
+
+            // Format DOB
+            OffsetDateTime odt = OffsetDateTime.parse(data.getDob());
+            String formattedDob = odt.toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            userDto.setDob(formattedDob);
+
+            userDto.setGender(data.getGender());
+            userDto.setRole("nurse");
+
+            // Convert to JSON string
+            String userJson = new ObjectMapper().writeValueAsString(userDto);
+
+            // Send to User Microservice
+            String result = service.sendToLoginService(userJson,data.getEmail());
+
+            // Log success
+            System.out.println("Form submitted and forwarded successfully.");
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            // Log error
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to process form data: " + e.getMessage());
+        }
+    }
+
 
 	
 }

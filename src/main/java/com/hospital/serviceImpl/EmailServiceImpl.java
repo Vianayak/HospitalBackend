@@ -2,6 +2,7 @@ package com.hospital.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -193,6 +194,47 @@ public class EmailServiceImpl implements EmailService {
 	    mailSender.send(message);
 	}
 	
+	
+	
+	public String getNurseRegistrationEmailTemplate(String nurseName, String googleFormLink) {
+	    return "Hello " + nurseName + ",<br/><br/>"
+	            + "Welcome to TechSpryn! We are excited to have you on board as a nurse.<br/><br/>"
+	            + "To complete your registration, please fill out the following form:<br/><br/>"
+	            + "<b>Complete Your Registration</b><br/>"
+	            + "<a href='" + googleFormLink + "'>" + googleFormLink + "</a><br/><br/>"
+	            + "This form will help us gather additional details required for your profile.<br/><br/>"
+	            + "<b>Next Steps:</b><br/>"
+	            + "1. Click the link above and fill in your details.<br/>"
+	            + "2. Once submitted, our team will verify your information.<br/>"
+	            + "3. You will receive confirmation once your profile is fully set up.<br/><br/>"
+	            + "<b>Contact Support</b><br/>"
+	            + "If you have any questions, feel free to reach out to us at support@techspryn.com.<br/><br/>"
+	            + "Best Regards,<br/>"
+	            + "TechSpryn Team<br/><br/>"
+	            + "TechSpryn<br/>"
+	            + "123 Health Avenue, Suite 456, New York, NY 10001<br/>"
+	            + "Phone: (123) 456-7890<br/>"
+	            + "Website: <a href='http://www.TechSpryn.com'>www.TechSpryn.com</a>";
+	}
+
+
+	public void sendGoogleFormEmail(String name, String email) {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+			helper.setTo(email);
+			helper.setSubject("Complete Your Registration - TechSpryn");
+
+			helper.setText(getNurseRegistrationEmailTemplate(name, "https://forms.gle/NAFGvm3Tmy98ANRv7"));
+
+	        mailSender.send(message);
+
+	        System.out.println("Email sent successfully to: " + email);
+	    } catch (Exception e) {
+	        System.err.println("Error sending email: " + e.getMessage());
+	    }
+	}
+
 	
 	
 }

@@ -71,6 +71,14 @@ public class HomeServiceRequestDto {
     private String status;
     private byte[] ePrescription;
     private byte[] identityDocs;
+    private int id;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
     // Constructor
   

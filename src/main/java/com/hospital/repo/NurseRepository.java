@@ -16,5 +16,8 @@ public interface NurseRepository extends JpaRepository<Nurse, Integer>{
 	public Optional<Nurse> findById(int id);
 	
 	List<Nurse> findByDoctorRegNum(String doctorRegNum);
+	
+	boolean existsByEmail(String email);
+
 
 }

@@ -60,6 +60,8 @@ public class HomeServicesServiceImpl implements HomeServicesService {
              dto.setePrescription((byte[])row[2]); // Convert BLOB to String
              dto.setIdentityDocs((byte[])row[3]); // Convert BLOB to String
              dto.setPatientRegNum((String) row[4]);
+             dto.setId((Integer) row[5]);
+             dto.setStatus((String) row[6]);
 
             // Fetch patient details from another microservice
             UsersDto userDto = fetchUserDetails(dto.getPatientRegNum());
