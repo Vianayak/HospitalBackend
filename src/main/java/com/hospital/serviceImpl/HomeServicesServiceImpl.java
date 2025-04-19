@@ -33,7 +33,7 @@ public class HomeServicesServiceImpl implements HomeServicesService {
 
 	@Override
 	public void saveHomeServices(String reason, String date, String time, MultipartFile prescription,
-			MultipartFile identity, String docId) throws IOException {
+			MultipartFile identity, String docId,String location) throws IOException {
 		byte[] prescriptionBytes = prescription.getBytes();
         byte[] identityBytes = identity.getBytes();
         
@@ -44,6 +44,7 @@ public class HomeServicesServiceImpl implements HomeServicesService {
         model.setIdentity(identityBytes);
         model.setReason(reason);
         model.setTime(time);
+        model.setLocation(location);
         repo.save(model);
 	}
 

@@ -43,9 +43,10 @@ public ResponseEntity<String> saveHomeService(@RequestParam("reason") String rea
         @RequestParam("time") String time,
         @RequestParam("e_prescription") MultipartFile prescription,
         @RequestParam("identity") MultipartFile identity,
-        @RequestParam(value = "docId", required = false) String docId) throws IOException{
+        @RequestParam(value = "docId", required = false) String docId,
+        @RequestParam("location") String location) throws IOException{
 	
-	service.saveHomeServices(reason,date,time,prescription,identity,docId);
+	service.saveHomeServices(reason,date,time,prescription,identity,docId,location);
 	return ResponseEntity.ok("success");
 }
 	

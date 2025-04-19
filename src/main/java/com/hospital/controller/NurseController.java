@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hospital.dto.NurseDto;
 import com.hospital.dto.NurseFormData;
+import com.hospital.dto.NurseRequestsDto;
 import com.hospital.dto.UserDto;
 import com.hospital.dto.UsersDto;
 import com.hospital.model.Nurse;
@@ -162,6 +164,26 @@ public class NurseController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to process form data: " + e.getMessage());
+        }
+    }
+
+
+    
+    @GetMapping("/allRequests")
+    public ResponseEntity<?> getNurseRequests(@RequestParam String nurseRegNum) {
+        try {
+            List<NurseRequestsDto> lst = service.getNurseRequests(nurseRegNum);
+
+            if (lst == null || lst.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("No nurse requests found for nurse: " + nurseRegNum);
+            }
+
+            return ResponseEntity.ok(lst);
+            
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Something went wrong: " + ex.getMessage());
         }
     }
 

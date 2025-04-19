@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hospital.dto.NurseDto;
+import com.hospital.dto.NurseRequestsDto;
+import com.hospital.dto.NurseRequestsTempDto;
 import com.hospital.dto.UsersDto;
 import com.hospital.model.Nurse;
 import com.hospital.repo.NurseRepository;
@@ -22,6 +24,7 @@ public class NurseServiceImpl implements NurseService{
 	
 	
 	private static final String USER_SERVICE_URL = "http://localhost:8082/api/user/user-details";
+	private static final String USER_SERVICE_URL_REG_NUM = "http://localhost:8082/api/user/user-details-by-reg-num";
 	
 	@Autowired
 	private NurseRepository repo;
@@ -134,7 +137,46 @@ public class NurseServiceImpl implements NurseService{
 	private boolean checkNurseAvailability(String email) {
 		return repo.existsByEmail(email);
 	}
+	
+	
+	@Override
+	public List<NurseRequestsDto> getNurseRequests(String NurseRegNum){
+		
+		List<NurseRequestsTempDto> lst=repo.findHomeServiceDetailsByNurse(NurseRegNum);
+		
+		
+		List<NurseRequestsDto> newLst=new ArrayList<>();
+		
+		
+		for(NurseRequestsTempDto dto:lst) {
+			
+			UsersDto user=fetchUserDetailsByRegNum(dto.getPatientRegNum());
+			
+			NurseRequestsDto req=new NurseRequestsDto();
+			req.setName(user.getFirstName()+" "+user.getLastName());
+			req.setDate(dto.getDate());
+			req.setReason(dto.getReason());
+			req.setTime(dto.getTime());
+			req.setLocation(dto.getLocation());
+			newLst.add(req);
+		}
+		
+		return newLst;
+		
+	}
 
+	
+	private UsersDto fetchUserDetailsByRegNum(String patientRegNum) {
+        HttpResponse<UsersDto> response = Unirest.get(USER_SERVICE_URL_REG_NUM)
+                .queryString("regNum", patientRegNum)
+                .header("Content-Type", "application/json")
+                .asObject(UsersDto.class);
+
+        if (response.getStatus() == HttpStatus.NOT_FOUND || response.getBody() == null) {
+            return null; 
+        }
+        return response.getBody();
+    }
 	
 
 }
