@@ -66,9 +66,9 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 	@Autowired
 	private DateAndTimeInfoRepo dateAndTimeInfoRepo;
 
-	private String razorpayId = "rzp_test_K5qGcFdtNC8hvm";
+	private String razorpayId = "rzp_test_KZRYa6VN2YWPGM";
 
-	private String razorpaySecret = "2Zp5B7nkfv4tS3bBDxaePh9f";
+	private String razorpaySecret = "sGXjs8U9WvvclBpM8kA7kmTp";
 
 	private RazorpayClient razorpayCLient;
 
@@ -254,7 +254,7 @@ public class BookAppointmentServiceImpl implements BookAppointmentService {
 
 	public static boolean validateRazorpaySignature(String paymentId, String orderId, String signature) {
         try {
-            String secret = "2Zp5B7nkfv4tS3bBDxaePh9f";
+            String secret = "sGXjs8U9WvvclBpM8kA7kmTp";
             String payload = orderId + "|" + paymentId;
 
             // Logging the payload to check for any issues
